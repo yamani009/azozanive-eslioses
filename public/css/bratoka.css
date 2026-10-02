@@ -32,9 +32,7 @@ body{
     width: 100%;
     padding-top: 15px;
 }
-.maina img:nth-child(2){
-    display: none;
-}
+
 
 .line{
     width: 100%;
@@ -180,11 +178,14 @@ body{
     .pc{
         display: none;
     }
+    .pc-2{
+        display: block;
+    }
     .topano{
         width: 100%;
     }
     .topano img:nth-child(1){
-        display: none;
+        margin: 20px 0;
     }
     .topano img:nth-child(2){
         display: block;
@@ -224,8 +225,24 @@ body{
         padding: 0px;
     }
     .pp1{
-        font-size: 22px;
+        font-size: 33px;
+        font-weight: 700;
         display: flex;
+    }
+    .pp2{
+        font-size: 1.3rem;
+        font-weight: 700;
+        display: flex;
+    }
+    .maina button{
+        width: 100%;
+        height: 57px;
+        font-size: 20px;
+        font-weight: 400;
+    }
+    .maina input{
+        width: 100%;
+        height: 45px;
     }
     .pas{
         display: none;
@@ -241,4 +258,7 @@ body{
 
 .pc1 {
     padding: 10px 120px;
+}
+.pc-2 {
+    padding: 15px ;
 }
