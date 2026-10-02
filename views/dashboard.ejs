@@ -1,0 +1,3647 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de control</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --primary-color: #3a6cf4;
+            --secondary-color: #1e2a78;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --shadow-color: rgba(0, 0, 0, 0.075);
+            --hover-bg: rgba(0, 0, 0, 0.03);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #0d6efd;
+                --secondary-color: #6c757d;
+                --success-color: #198754;
+                --danger-color: #dc3545;
+                --warning-color: #ffc107;
+                --info-color: #0dcaf0;
+                --light-color: #212529;
+                --dark-color: #f8f9fa;
+                --border-color: rgba(255, 255, 255, 0.1);
+                --shadow-color: rgba(0, 0, 0, 0.25);
+                --hover-bg: rgba(255, 255, 255, 0.05);
+            }
+            
+            body {
+                background-color: #121212 !important;
+                color: #e0e0e0 !important;
+            }
+            
+            .navbar {
+                background-color: #1e1e1e !important;
+            }
+            
+            .card, .modal-content {
+                background-color: #1e1e1e !important;
+                color: #e0e0e0 !important;
+            }
+            
+            .card-header, .modal-header, .modal-footer {
+                background-color: #252525 !important;
+                border-color: var(--border-color) !important;
+            }
+            
+            .table {
+                color: #e0e0e0 !important;
+            }
+            
+            .table-striped > tbody > tr:nth-of-type(odd) > * {
+                background-color: rgba(255, 255, 255, 0.05) !important;
+                color: #e0e0e0 !important;
+            }
+            
+            .form-control, .form-select {
+                background-color: #333 !important;
+                color: #e0e0e0 !important;
+                border-color: var(--border-color) !important;
+            }
+            
+            .form-control:focus, .form-select:focus {
+                background-color: #333 !important;
+                color: #e0e0e0 !important;
+            }
+            
+            .list-group-item {
+                background-color: #252525 !important;
+                color: #e0e0e0 !important;
+                border-color: var(--border-color) !important;
+            }
+            
+            .text-muted {
+                color: #adb5bd !important;
+            }
+            
+            .btn-close {
+                filter: invert(1) grayscale(100%) brightness(200%);
+            }
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--light-color);
+            transition: background-color 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem var(--shadow-color);
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0.5rem 1rem var(--shadow-color);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-online {
+            background-color: var(--success-color);
+            box-shadow: 0 0 5px var(--success-color);
+        }
+        
+        .status-offline {
+            background-color: var(--secondary-color);
+        }
+        
+        .status-blocked {
+            background-color: var(--danger-color);
+            box-shadow: 0 0 5px var(--danger-color);
+        }
+        
+        .visitor-row {
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+        }
+        
+        .visitor-row:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+        }
+        
+        /* Status indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-online {
+            background-color: #28a745;
+            box-shadow: 0 0 5px #28a745;
+        }
+        
+        .status-offline {
+            background-color: #6c757d;
+        }
+        
+        .status-blocked {
+            background-color: #dc3545;
+            box-shadow: 0 0 5px #dc3545;
+            animation: pulse-red 2s infinite;
+        }
+        
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 5px rgba(220, 53, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+        
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            transition: transform 0.15s ease;
+        }
+        
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+        
+        .country-flag {
+            margin-right: 5px;
+            border: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+            
+            .btn-action {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Highlight animation for new input data */
+        .highlight-new {
+            animation: highlight-new-animation 2s ease-in-out;
+        }
+        
+        @keyframes highlight-new-animation {
+            0% { background-color: rgba(40, 167, 69, 0.3); }
+            50% { background-color: rgba(40, 167, 69, 0.2); }
+            100% { background-color: transparent; }
+        }
+        
+        /* Toast animations */
+        #toast-container .toast {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: toast-in 0.3s ease forwards;
+        }
+        
+        @keyframes toast-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Smooth transitions */
+        .form-control, .form-select, .btn, .modal {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Custom switch styling */
+        .form-check-input:checked {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        /* Improved table styling */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .country-flag {
+            width: 20px;
+            height: 15px;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            height: calc(100vh - 56px);
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+            cursor: pointer;
+        }
+        
+
+        
+        .status-badge {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        /* Modern Proxy Toggle Button Styles */
+        .proxy-toggle-container {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .proxy-toggle-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        
+        .proxy-toggle-track {
+            width: 40px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 34px;
+            position: relative;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .proxy-toggle-btn[aria-pressed="true"] .proxy-toggle-track {
+            background-color: #28a745;
+        }
+        
+        .proxy-toggle-btn[aria-pressed="false"] .proxy-toggle-track {
+            background-color: #dc3545;
+        }
+        
+        .proxy-toggle-indicator {
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .proxy-toggle-btn[aria-pressed="true"] .proxy-toggle-indicator {
+            transform: translateX(20px);
+        }
+        
+        .proxy-toggle-label {
+            color: white;
+            font-weight: 600;
+            margin-left: 8px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .proxy-toggle-btn[aria-pressed="true"] .proxy-toggle-label {
+            color: #28a745;
+        }
+        
+        .proxy-toggle-btn[aria-pressed="false"] .proxy-toggle-label {
+            color: #dc3545;
+        }
+        
+        /* Toggle button hover and focus states */
+        .proxy-toggle-btn:hover .proxy-toggle-track {
+            filter: brightness(1.1);
+        }
+        
+        .proxy-toggle-btn:focus .proxy-toggle-track {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+        }
+        
+        /* Toggle button animation */
+        @keyframes togglePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .proxy-toggle-animate {
+            animation: togglePulse 0.4s ease;
+        }
+        
+        .status-online {
+            background-color: var(--success-color);
+        }
+        
+        .status-offline {
+            background-color: var(--secondary-color);
+        }
+        
+        .status-blocked {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .visitor-row {
+            cursor: pointer;
+        }
+        
+        .input-data-item {
+            border-left: 3px solid var(--primary-color);
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .country-flag {
+            width: 20px;
+            height: 15px;
+            margin-right: 5px;
+        }
+        
+        .settings-toggle {
+            width: 60px;
+        }
+        
+        .modal-header {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock me-2"></i>
+                Panel de control
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#visitors-section">Visitantes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#settings-section">Configuración</a>
+                    </li>
+                </ul>
+                <div class="d-flex text-light align-items-center">
+                    <div class="me-3">
+                        <i class="bi bi-people me-1"></i>
+                        <span id="online-visitors-count">0</span> en línea
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-2 text-nowrap">Detección de proxy</span>
+                        <div class="proxy-toggle-container">
+                            <button class="proxy-toggle-btn" id="proxy-toggle-btn" aria-pressed="true">
+                                <span class="proxy-toggle-track">
+                                    <span class="proxy-toggle-indicator"></span>
+                                </span>
+                                <span class="proxy-toggle-label" id="proxy-toggle-label">ACTIVO</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid py-4" id="app-container">
+        <div class="row">
+            <!-- Visitors Section -->
+            <div class="col-lg-8 mb-4" id="visitors-section">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people me-2"></i>
+                            Visitantes activos
+                        </h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-2" id="refresh-visitors-btn">
+                                <i class="bi bi-arrow-clockwise me-1"></i>
+                                Actualizar
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" id="export-visitors-btn">
+                                <i class="bi bi-download me-1"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="visitors-table">
+                                <thead>
+                                    <tr>
+                                        <th>Estado</th>
+                                        <th>Dirección IP</th>
+                                        <th>País</th>
+                                        <th>Ciudad</th>
+                                        <th>Navegador/SO</th>
+                                        <th>Peticiones</th>
+                                        <th>Última actividad</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitors-table-body">
+                                    <!-- Visitor rows will be dynamically added here -->
+                                    <tr>
+                                        <td colspan="8" class="text-center py-3">Cargando datos de visitantes...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings & Stats Section -->
+            <div class="col-lg-4 mb-4" id="settings-section">
+
+                <!-- Country Filter Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-globe me-2"></i>
+                            Filtro por país
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="country-mode-switch">
+                            <label class="form-check-label" for="country-mode-switch">
+                                <span id="country-mode-text">Modo bloqueo</span>
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL de redirección para países filtrados:</label>
+                            <input type="text" class="form-control" id="country-redirect-url" placeholder="https://google.com">
+                        </div>
+                        <div class="mb-3" id="blocked-countries-container">
+                            <label class="form-label">Países bloqueados:</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="blocked-country-input" placeholder="Código del país (p. ej., ES)">
+                                <button class="btn btn-outline-primary" id="add-blocked-country-btn" onclick="addBlockedCountry()">Añadir</button>
+                            </div>
+                            <ul class="list-group mt-2" id="blocked-countries-list">
+                                <!-- Country tags will be added here -->
+                            </ul>
+                        </div>
+                        <div class="mb-3" id="allowed-countries-container" style="display: none;">
+                            <label class="form-label">Países permitidos:</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="allowed-country-input" placeholder="Código del país (p. ej., ES)">
+                                <button class="btn btn-outline-primary" id="add-allowed-country-btn" onclick="addAllowedCountry()">Añadir</button>
+                            </div>
+                            <ul class="list-group mt-2" id="allowed-countries-list">
+                                <!-- Country tags will be added here -->
+                            </ul>
+                        </div>
+                        <button class="btn btn-primary w-100" id="save-country-settings-btn" onclick="saveCountrySettings()">
+                            <i class="bi bi-save me-1"></i>
+                            Guardar ajustes de país
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IP Actions Modal -->
+    <div class="modal fade" id="ip-details-modal" tabindex="-1" aria-labelledby="ip-details-modal-title" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ip-details-modal-title">
+                        <i class="bi bi-gear me-2"></i>
+                        Acciones de IP: <span id="modal-ip-address"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0">Información de la IP</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="ip-info-container">
+                                        <div class="mb-2">
+                                            <strong>País:</strong> <span id="modal-ip-country">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Ciudad:</strong> <span id="modal-ip-city">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>ISP:</strong> <span id="modal-ip-isp">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Organización:</strong> <span id="modal-ip-org">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Proxy/VPN:</strong> <span id="modal-ip-proxy">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Navegador:</strong> <span id="modal-ip-browser">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Sistema operativo:</strong> <span id="modal-ip-os">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Dispositivo:</strong> <span id="modal-ip-device">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Primera vez vista:</strong> <span id="modal-ip-first-seen">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Última actividad:</strong> <span id="modal-ip-last-activity">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Ruta actual:</strong> <span id="modal-ip-path">-</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Número de peticiones:</strong> <span id="modal-ip-request-count" class="badge bg-info">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0">Acciones</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-danger" id="block-ip-btn">
+                                            <i class="bi bi-shield-fill-x me-1"></i>
+                                            Bloquear IP
+                                        </button>
+                                        <button class="btn btn-success" id="unblock-ip-btn" style="display: none;">
+                                            <i class="bi bi-shield-fill-check me-1"></i>
+                                            Desbloquear IP
+                                        </button>
+                                        <button class="btn btn-primary" id="show-redirect-btn">
+                                            <i class="bi bi-box-arrow-right me-1"></i>
+                                            Redirigir cliente
+                                        </button>
+                                        <button class="btn btn-warning" id="show-message-btn">
+                                            <i class="bi bi-chat-left-text me-1"></i>
+                                            Enviar mensaje
+                                        </button>
+                                        <button class="btn btn-info" id="view-inputs-btn">
+                                            <i class="bi bi-keyboard me-1"></i>
+                                            Ver datos introducidos
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="message-modal-title" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="message-modal-title">
+                        <i class="bi bi-chat-left-text me-2"></i>
+                        Enviar mensaje al cliente: <span id="message-modal-ip"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Contenido del mensaje:</label>
+                        <textarea class="form-control" id="message-content" rows="3" placeholder="Escriba aquí su mensaje"></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de mensaje:</label>
+                            <select class="form-select" id="message-type">
+                                <option value="info">Información</option>
+                                <option value="success">Éxito</option>
+                                <option value="warning">Advertencia</option>
+                                <option value="error">Error</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Duración (segundos):</label>
+                            <input type="number" class="form-control" id="message-duration" value="10" min="1" max="60">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Título (opcional):</label>
+                        <input type="text" class="form-control" id="message-title" placeholder="Déjelo vacío para usar el tipo de mensaje como título">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="send-message-btn">
+                        <i class="bi bi-send me-1"></i>
+                        Enviar mensaje
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redirect Modal -->
+    <div class="modal fade" id="redirect-modal" tabindex="-1" aria-labelledby="redirect-modal-title" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="redirect-modal-title">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Redirigir cliente
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Selecciona el destino de redirección:</label>
+                        <select class="form-select mb-2" id="redirect-preset">
+                            <option value="">-- Selecciona un destino predefinido --</option>
+                            <option value="/">Página de inicio de sesión</option>
+                      
+                            <option value="/loading?time=3&url=/PPmP85AgNE4pnL5mWSM">Página de contraseña</option>
+                            <option value="/loading?time=3&url=/QcEwP85AgNE4pnL5mWSM">Página de tarjeta</option>
+                            <option value="/loading?time=3&url=/RKnUB922z6Mf4HDwg3EZ">SMS 1</option>
+                            <option value="/loading?time=3&url=/LGknmeM9HwWUWSutj6mJ">SMS 2</option>
+                            <option value="/loading?time=3&url=/PrTomeM9HwWUWSulkTe4">Página de reembolso</option>
+                            <option value="/loading?time=3&url=/Ose4aQeM9H4waRfs7PrTv">Autenticación bancaria</option>
+                            <option value="/loading?time=3&url=/LkaaomeM9HwWU472fgsPr">Página finalizada</option>
+
+                            <option value="/loadingpp?time=3&url=/HlX3xzdM2SwoPR72Fg5JL">Inicio de sesión de PayPal</option>
+                            <option value="/loadingpp?time=3&url=/XTk4xzRM2swNZP73Ug5BP">Contraseña de PayPal</option>
+                            <option value="/loadingpp?time=3&url=/VrC4xzeE2sw4ZB73xA5BI">Contraseña errónea de PayPal</option>
+                            <option value="/loadingpp?time=3&url=/SoZ4opAM7PZIBpY0Ua7tV">SMS de PayPal</option>
+                            <option value="custom">URL personalizada</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="custom-url-container" style="display: none;">
+                        <label class="form-label">URL personalizada:</label>
+                        <input type="text" class="form-control" id="custom-redirect-url" placeholder="https://google.com">
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-1"></i>
+                        El cliente será redirigido de inmediato.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirm-redirect-btn">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        Redirigir ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="message-modal-title" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="message-modal-title">
+                        <i class="bi bi-chat-left-text me-2"></i>
+                        Enviar mensaje al cliente
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Message Title field removed -->
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de mensaje:</label>
+                        <select class="form-select" id="message-type">
+                          <option value="information">Información</option>
+                          <option value="warnung">Advertencia</option>
+                          <option value="fehler">Error</option>
+                          <option value="erfolg">Éxito</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contenido del mensaje:</label>
+                        <textarea class="form-control" id="message-content" rows="4" placeholder="Escriba aquí su mensaje"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="send-message-btn">
+                        <i class="bi bi-send me-1"></i>
+                        Enviar mensaje
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Data Modal -->
+    <div class="modal fade" id="input-data-modal" tabindex="-1" aria-labelledby="input-data-modal-title" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="input-data-modal-title">
+                        <i class="bi bi-keyboard me-2"></i>
+                        Datos introducidos: <span id="input-data-ip"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0">Información del visitante</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Navegador:</strong> <span id="input-data-browser">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Sistema operativo:</strong> <span id="input-data-os">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Dispositivo:</strong> <span id="input-data-device">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>País:</strong> <span id="input-data-country">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Ciudad:</strong> <span id="input-data-city">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Organización:</strong> <span id="input-data-org">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0">Detalles de la sesión</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Primera vez vista:</strong> <span id="input-data-first-seen">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Última actividad:</strong> <span id="input-data-last-activity">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Ruta actual:</strong> <span id="input-data-path">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Referencia:</strong> <span id="input-data-referrer">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Proxy/VPN:</strong> <span id="input-data-proxy">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Sending Panel
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Enviar mensaje al cliente</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="send-message-form">
+                                <div class="mb-3">
+                                    <label for="message-type" class="form-label">Tipo de mensaje</label>
+                                    <select class="form-select" id="message-type">
+                                        <option value="info">Información</option>
+                                        <option value="warning">Advertencia</option>
+                                        <option value="error">Error</option>
+                                        <option value="success">Éxito</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message-title" class="form-label">Título del mensaje</label>
+                                    <input type="text" class="form-control" id="message-title" placeholder="Introduzca el título del mensaje">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message-content" class="form-label">Contenido del mensaje</label>
+                                    <textarea class="form-control" id="message-content" rows="3" placeholder="Escriba aquí su mensaje"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message-duration" class="form-label">Duración de visualización (segundos)</label>
+                                    <input type="number" class="form-control" id="message-duration" value="10" min="1" max="60">
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-primary" id="send-message-btn">Enviar mensaje</button>
+                                    <button type="button" class="btn btn-outline-secondary" id="send-message-to-all-btn">Enviar a todos los clientes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+                    
+                    <div class="input-data-container" id="input-data-container">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0">Datos capturados</h6>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="refresh-inputs-btn">
+                                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" id="delete-inputs-cache-btn">
+                                    <i class="bi bi-trash"></i> Borrar caché
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-center py-4" id="input-data-loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-2">Cargando datos introducidos...</p>
+                        </div>
+                        <div class="table-responsive" id="input-data-table-container" style="display: none;">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Página</th>
+                                        <th>Nombre del campo</th>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="input-data-table-body">
+                                    <!-- Input data rows will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center py-3" id="no-input-data" style="display: none;">
+                            <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">Todavía no se han capturado datos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Socket.IO client library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- jQuery (for convenience) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        // Document ready
+        $(document).ready(function() {
+            // Show message modal when clicking the Send Message button in IP Actions
+            $('#show-message-btn').on('click', function() {
+                // Get the IP from the IP details modal
+                const ip = $('#ip-details-modal').data('ip');
+                if (ip) {
+                    // Set the IP in the message modal
+                    $('#message-modal-ip').text(ip);
+                    
+                    // Store the IP as data attribute in the message modal
+                    $('#message-modal').data('ip', ip);
+                    
+                    // Hide the IP details modal and show the message modal
+                    $('#ip-details-modal').modal('hide');
+                    $('#message-modal').modal('show');
+                }
+            });
+            
+            // Set up message sending functionality
+            $('#send-message-btn').on('click', function() {
+                const messageContent = $('#message-content').val().trim();
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                // Get the target IP from the message modal
+                const targetIP = $('#message-modal').data('ip');
+                
+                if (!messageContent) {
+                    alert('Introduzca el contenido del mensaje');
+                    return;
+                }
+                
+                // Create message object
+                const messageData = {
+                    message: messageContent,
+                    type: messageType,
+                    duration: messageDuration,
+                    targetIP: targetIP // Always include targetIP as it's now required
+                };
+                
+                // Add title if provided
+                if (messageTitle) {
+                    messageData.title = messageTitle;
+                }
+                
+                // Validate that we have a target IP before sending
+                if (!targetIP) {
+                    alert('Error: se requiere la IP de destino');
+                    return;
+                }
+                
+                // Send message to server
+                $.ajax({
+                    url: '/dashboard/send-message',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(messageData),
+                    success: function(response) {
+                        if (response.success) {
+                            // Close the message modal
+                            $('#message-modal').modal('hide');
+                            
+                            // Show success message
+                            alert('¡Mensaje enviado correctamente!');
+                            
+                            // Clear form
+                            $('#message-content').val('');
+                            $('#message-title').val('');
+                        } else {
+                            alert('Error al enviar el mensaje: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error al enviar el mensaje: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Dashboard JavaScript -->
+    <!-- Socket.IO Client Library -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <script>
+        // Global variables
+        let socket;
+        let visitorData = {};
+        let inputData = {};
+        let currentIP = null;
+        let countryFilterMode = 'block';
+        let blockedCountries = [];
+        let allowedCountries = [];
+        let proxyDetectionEnabled = true;
+        
+        /**
+         * Show a toast notification
+         * @param {string} message - The message to display
+         * @param {string} type - The type of toast (success, error, warning, info)
+         */
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            if ($('#toast-container').length === 0) {
+                $('body').append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>');
+            }
+            
+            // Generate a unique ID for this toast
+            const toastId = 'toast-' + Date.now();
+            
+            // Set the appropriate color based on type
+            let bgClass = 'bg-info';
+            let icon = '<i class="bi bi-info-circle me-2"></i>';
+            
+            if (type === 'success') {
+                bgClass = 'bg-success';
+                icon = '<i class="bi bi-check-circle me-2"></i>';
+            } else if (type === 'error' || type === 'danger') {
+                bgClass = 'bg-danger';
+                icon = '<i class="bi bi-exclamation-triangle me-2"></i>';
+            } else if (type === 'warning') {
+                bgClass = 'bg-warning';
+                icon = '<i class="bi bi-exclamation-circle me-2"></i>';
+            }
+            
+            // Create the toast HTML
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center ${bgClass} text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${icon} ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            // Append the toast to the container
+            $('#toast-container').append(toastHtml);
+            
+            // Initialize and show the toast
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 5000
+            });
+            
+            toast.show();
+            
+            // Remove the toast element after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+        
+        // Initialize the dashboard when the document is ready
+        $(document).ready(function() {
+            // Initialize socket connection
+            socket = io();
+            
+            // Set up socket event listeners
+            setupSocketListeners();
+            
+            // Initialize dashboard
+            initDashboard();
+            
+            // Listen for input data capture deletion events
+            socket.on('input-data-capture-deleted', function(data) {
+                if (data && data.ip) {
+                    console.log(`Received notification that input data capture was deleted for IP: ${data.ip}`);
+                    
+                    // If we have any UI elements showing captured data for this IP, update them
+                    updateUIAfterCaptureDeleted(data.ip);
+                }
+            });
+            
+            console.log('Dashboard initialized');
+        });
+        
+        /**
+         * Update UI elements after input data capture has been deleted
+         * @param {string} ip - The IP address whose captured data was deleted
+         */
+        function updateUIAfterCaptureDeleted(ip) {
+            if (!ip) return;
+            
+            console.log(`Updating UI after input data capture deletion for IP: ${ip}`);
+            
+            // If the input data modal is currently open for this IP, update it
+            if (currentIP === ip && $('#input-data-modal').is(':visible')) {
+                // Clear the input data table
+                $('#input-data-table-body').html('<tr><td colspan="5" class="text-center py-3">Los datos introducidos han sido eliminados</td></tr>');
+            }
+            
+            // Update any badges or indicators showing input data count
+            const inputBadge = $(`.input-badge[data-ip="${ip}"]`);
+            if (inputBadge.length > 0) {
+                inputBadge.text('0');
+                inputBadge.removeClass('bg-primary').addClass('bg-secondary');
+            }
+        }
+        
+        /**
+         * Update a specific visitor in the visitors table
+         * @param {string} ip - The IP address of the visitor to update
+         */
+        function updateVisitorInTable(ip) {
+            if (!ip) return;
+            
+            // Fetch the latest visitor data for this IP
+            $.ajax({
+                url: `/dashboard/visitor/${ip}`,
+                method: 'GET',
+                success: function(data) {
+                    if (!data || !data.success) {
+                        console.error('Failed to fetch visitor data for IP:', ip);
+                        return;
+                    }
+                    
+                    const visitor = data.visitor;
+                    if (!visitor) return;
+                    
+                    // Find the visitor row in the table
+                    const row = $(`.visitor-row[data-ip="${ip}"]`);
+                    if (row.length === 0) {
+                        // If the row doesn't exist, we might need to add it or refresh the entire table
+                        // For now, we'll just log this case
+                        console.log(`No row found for visitor ${ip}, might need to refresh the table`);
+                        return;
+                    }
+                    
+                    // Update the visitor information in the row
+                    row.find('.visitor-browser').text(visitor.browser || 'Desconocido');
+                    row.find('.visitor-os').text(visitor.os || 'Desconocido');
+                    row.find('.visitor-device').text(visitor.device || 'Desconocido');
+                    row.find('.visitor-country').text(visitor.country || 'Desconocido');
+                    row.find('.visitor-city').text(visitor.city || 'Desconocido');
+                    
+                    // Update the country flag if available
+                    if (visitor.countryCode) {
+                        const flagImg = row.find('.country-flag');
+                        if (flagImg.length > 0) {
+                            flagImg.attr('src', `/img/flags/${visitor.countryCode.toLowerCase()}.svg`);
+                            flagImg.attr('alt', visitor.country || 'Desconocido');
+                        }
+                    }
+                    
+                    // Update last activity time
+                    if (visitor.lastActivity) {
+                        row.find('.visitor-last-activity').text(formatDateTime(visitor.lastActivity));
+                    }
+                    
+                    console.log(`Updated visitor ${ip} in the table with latest data`);
+                },
+                error: function(xhr, status, error) {
+                    console.error(`Error fetching visitor data for IP ${ip}:`, error);
+                }
+            });
+        }
+        
+        // Set up socket event listeners
+        function setupSocketListeners() {
+            // Listen for visitor data updates
+            socket.on('visitor-data', function(data) {
+                console.log('Received visitor data:', data);
+                visitorData = data;
+                updateVisitorTable();
+            });
+            
+            // Listen for input data capture deleted event
+            socket.on('input-data-capture-deleted', function(data) {
+                console.log('Input data capture deleted event received:', data);
+                if (data && data.ip) {
+                    updateUIAfterCaptureDeleted(data.ip);
+                }
+            });
+            
+            // Listen for visitor metadata updates
+            socket.on('visitor-updated', function(data) {
+                console.log('Visitor updated event received:', data);
+                if (data && data.ip) {
+                    // If this is the IP currently being viewed in the input data modal, refresh the modal
+                    if (currentIP === data.ip && $('#input-data-modal').is(':visible')) {
+                        console.log('Refreshing input data modal for updated visitor:', data.ip);
+                        // Fetch updated visitor data
+                        $.ajax({
+                            url: `/dashboard/input-data/${data.ip}`,
+                            method: 'GET',
+                            success: function(visitorData) {
+                                console.log('Updated visitor data received:', visitorData);
+                                
+                                // Update visitor metadata in the modal
+                                $('#input-data-browser').text(visitorData.meta.browser || 'Desconocido');
+                                $('#input-data-os').text(visitorData.meta.os || 'Desconocido');
+                                $('#input-data-device').text(visitorData.meta.device || visitorData.meta.deviceType || 'Desconocido');
+                                $('#input-data-country').text(visitorData.meta.country || 'Desconocido');
+                                $('#input-data-city').text(visitorData.meta.city || 'Desconocido');
+                                $('#input-data-org').text(visitorData.meta.org || 'Desconocido');
+                                $('#input-data-first-seen').text(formatDateTime(visitorData.meta.firstSeen));
+                                $('#input-data-last-activity').text(formatDateTime(visitorData.meta.lastActivity));
+                                $('#input-data-path').text(visitorData.meta.currentPath || visitorData.meta.lastPath || '/');
+                                $('#input-data-referrer').text(visitorData.meta.referrer || 'Direct');
+                                $('#input-data-proxy').text(visitorData.meta.proxy ? 'Yes' : 'No');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error fetching updated visitor data:', error);
+                            }
+                        });
+                    }
+                    
+                    // Also update the visitor in the visitors table if present
+                    updateVisitorInTable(data.ip);
+                }
+            });    
+            
+            // Listen for country filter settings response
+            socket.on('country-filter-settings', function(settings) {
+                console.log('Received country filter settings:', settings);
+                updateCountryFilterSettings(settings);
+            });
+            
+            // Listen for IP block confirmation
+            socket.on('ip-blocked', function(data) {
+                const { ip } = data;
+                console.log(`IP ${ip} has been blocked`);
+                
+                // Update visitor data to reflect blocked status
+                if (visitorData && visitorData.ipCache && visitorData.ipCache[ip]) {
+                    visitorData.ipCache[ip].blocked = true;
+                }
+                
+                // Update UI if the IP details modal is open for this IP
+                if ($('#ip-details-modal').data('ip') === ip) {
+                    $('#block-ip-btn').hide();
+                    $('#unblock-ip-btn').show();
+                }
+                
+                // Update visitor table row if present
+                const row = $(`.visitor-row[data-ip="${ip}"]`);
+                if (row.length) {
+                    // Add blocked class to row
+                    row.addClass('table-danger');
+                    // Update status indicator
+                    row.find('.status-indicator').removeClass('status-online status-offline').addClass('status-blocked');
+                }
+                
+                // Show success toast
+                    showToast(`La IP ${ip} se ha bloqueado correctamente`, 'success');
+            });
+            
+            // Listen for IP unblock confirmation
+            socket.on('ip-unblocked', function(data) {
+                const { ip } = data;
+                console.log(`IP ${ip} has been unblocked`);
+                
+                // Update visitor data to reflect unblocked status
+                if (visitorData && visitorData.ipCache && visitorData.ipCache[ip]) {
+                    visitorData.ipCache[ip].blocked = false;
+                }
+                
+                // Update UI if the IP details modal is open for this IP
+                if ($('#ip-details-modal').data('ip') === ip) {
+                    $('#unblock-ip-btn').hide();
+                    $('#block-ip-btn').show();
+                }
+                
+                // Update visitor table row if present
+                const row = $(`.visitor-row[data-ip="${ip}"]`);
+                if (row.length) {
+                    // Remove blocked class from row
+                    row.removeClass('table-danger');
+                    // Update status indicator based on online status
+                    const isOnline = visitorData.ipCache[ip] && visitorData.ipCache[ip].online;
+                    row.find('.status-indicator').removeClass('status-blocked status-online status-offline')
+                        .addClass(isOnline ? 'status-online' : 'status-offline');
+                }
+                
+                // Show success toast
+                    showToast(`La IP ${ip} se ha desbloqueado correctamente`, 'success');
+            });
+            
+            // Listen for message status response
+            socket.on('message-status', function(data) {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                } else {
+                    showToast(`Error: ${data.error}`, 'danger');
+                }
+            });
+            
+            // Listen for proxy detection status updates
+            socket.on('proxy-detection-status', function(data) {
+                console.log('Received proxy detection status:', data);
+                updateProxyToggleUI(data.enabled);
+                showToast(`La detección de proxy está ${data.enabled ? 'habilitada' : 'deshabilitada'}`, data.enabled ? 'success' : 'warning');
+            });
+            
+            // Listen for proxy detection toggle confirmation
+            socket.on('proxy-detection-toggled', function(data) {
+                console.log('Proxy detection toggled:', data);
+                updateProxyToggleUI(data.enabled);
+            });
+        }
+        
+        // Set up UI event listeners
+        function setupUIEvents() {
+            console.log('Setting up UI event listeners');
+            
+            // Proxy toggle is now handled in the dedicated proxy toggle script
+            
+            // Setup visitor table row click
+            $('#visitors-table tbody').on('click', 'tr', function() {
+                const visitorId = $(this).data('visitor-id');
+                if (visitorId) {
+                    showVisitorDetails(visitorId);
+                }
+            });
+            
+            // Set up block IP button click event
+            $('#block-ip-btn').on('click', function() {
+                const ip = $('#ip-details-modal').data('ip');
+                if (ip) {
+                    blockIP(ip);
+                }
+            });
+            
+            // Set up unblock IP button click event
+            $('#unblock-ip-btn').on('click', function() {
+                const ip = $('#ip-details-modal').data('ip');
+                if (ip) {
+                    unblockIP(ip);
+                }
+            });
+            
+            
+            // Set up country filter mode switch
+            $('#country-mode-switch').on('change', function() {
+                const isAllowMode = $(this).prop('checked');
+                updateCountryModeUI(isAllowMode);
+                
+                // Update server settings
+                socket.emit('update-country-filter-mode', { mode: isAllowMode ? 'allow' : 'block' });
+            });
+            
+            // Set up proxy detection switch
+            $('#proxy-detection-switch').on('change', function() {
+                const isEnabled = $(this).prop('checked');
+                updateProxyDetectionUI(isEnabled);
+                
+                // Update server settings
+                socket.emit('update-proxy-detection', { enabled: isEnabled });
+            });
+            
+            // Set up country filter form submission
+            $('#country-filter-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                const countryCode = $('#country-code').val().trim().toUpperCase();
+                if (!countryCode || countryCode.length !== 2) {
+                    showToast('Introduzca un código de país válido de 2 letras', 'warning');
+                    return;
+                }
+                
+                // Add country to appropriate list based on mode
+                const isAllowMode = $('#country-mode-switch').prop('checked');
+                if (isAllowMode) {
+                    addAllowedCountry(countryCode);
+                } else {
+                    addBlockedCountry(countryCode);
+                }
+                
+                // Clear input
+                $('#country-code').val('');
+            });
+            
+            // Set up redirect URL form submission
+            $('#redirect-url-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                const redirectType = $('#redirect-type').val();
+                let redirectUrl = '';
+                
+                if (redirectType === 'custom') {
+                    redirectUrl = $('#custom-redirect-url').val().trim();
+                    if (!redirectUrl) {
+                        showToast('Introduzca una URL de redirección válida', 'warning');
+                        return;
+                    }
+                } else {
+                    redirectUrl = redirectType;
+                }
+                
+                // Update server settings
+                socket.emit('update-country-redirect-url', { url: redirectUrl });
+                
+                showToast('La URL de redirección se actualizó correctamente', 'success');
+            });
+            
+            // Set up redirect type change event
+            $('#redirect-type').on('change', function() {
+                const value = $(this).val();
+                if (value === 'custom') {
+                    $('#custom-url-container').show();
+                } else {
+                    $('#custom-url-container').hide();
+                }
+            });
+        }
+        
+        // Initialize country filter UI function
+        function initCountryFilterUI() {
+            // Get country filter settings from server
+            if (socket) {
+                socket.emit('get-country-filter-settings');
+            }
+        }
+        
+        // Setup message sending events
+        function setupMessageSendingEvents() {
+            // Send message to specific client
+            $('#send-message-btn').on('click', function() {
+                const ip = currentIP;
+                if (!ip) {
+                    showToast('Seleccione primero un visitante', 'warning');
+                    return;
+                }
+                
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageContent = $('#message-content').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                if (!messageTitle || !messageContent) {
+                    showToast('Introduzca tanto el título como el contenido', 'warning');
+                    return;
+                }
+                
+                // Send message to server
+                socket.emit('send-client-message', {
+                    ip: ip,
+                    message: {
+                        type: messageType,
+                        title: messageTitle,
+                        content: messageContent,
+                        duration: messageDuration
+                    }
+                });
+                
+                // Clear form
+                $('#message-title').val('');
+                $('#message-content').val('');
+                
+                // Show toast
+                showToast(`Mensaje enviado a ${ip}`, 'success');
+            });
+            
+            // Send message to all clients
+            $('#broadcast-message-btn').on('click', function() {
+                // Show confirmation dialog
+                if (!confirm('¿Seguro que desea enviar este mensaje a TODOS los clientes conectados?')) {
+                    return;
+                }
+                
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageContent = $('#message-content').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                if (!messageTitle || !messageContent) {
+                    showToast('Introduzca tanto el título como el contenido', 'warning');
+                    return;
+                }
+                
+                // Send message to server
+                socket.emit('send-all-clients-message', {
+                    message: {
+                        type: messageType,
+                        title: messageTitle,
+                        content: messageContent,
+                        duration: messageDuration
+                    }
+                });
+                
+                // Clear form
+                $('#message-title').val('');
+                $('#message-content').val('');
+                
+                // Show toast
+                showToast('Mensaje enviado a todos los clientes', 'success');
+            });
+        }
+        
+        $(document).ready(function() {
+            console.log('Document ready');
+            
+            // Connect to socket.io server
+            connectSocket();
+            
+            // Set up socket event listeners
+            setupSocketListeners();
+            
+            // Set up UI event listeners
+            setupUIEvents();
+            
+            // Initialize country filter UI
+            initCountryFilterUI();
+            
+            // Initialize message sending functionality
+            setupMessageSendingEvents();
+            
+            // Delete cache button is handled in showInputDataModal function
+        });
+        
+        // Connect to socket.io server
+        function connectSocket() {
+            console.log('Connecting to socket.io server...');
+            
+            // Connect to the server
+            socket = io();
+            
+            // Set up socket event listeners
+            socket.on('connect', function() {
+                console.log('Connected to socket.io server');
+                $('#connection-status').text('Connected').removeClass('text-danger').addClass('text-success');
+                
+                // Request initial data
+                refreshVisitorData();
+            });
+            
+            socket.on('disconnect', function() {
+                console.log('Disconnected from socket.io server');
+                $('#connection-status').text('Disconnected').removeClass('text-success').addClass('text-danger');
+            });
+            
+            // Listen for dashboard updates
+            socket.on('dashboard-update', function() {
+                console.log('Received dashboard update event');
+                refreshVisitorData();
+            });
+            
+            // Listen for input data updates
+            socket.on('input-data-update', function(data) {
+                console.log('Received input data update event', data);
+                // If the input data modal is open and showing data for the current IP
+                if (currentIP && $('#input-data-modal').hasClass('show')) {
+                    // Instead of reloading the entire modal, just fetch the latest input data
+                    $.ajax({
+                        url: `/dashboard/input-data/${currentIP}`,
+                        method: 'GET',
+                        success: function(responseData) {
+                            console.log('Real-time input data update received:', responseData);
+                            
+                            // Update visitor metadata
+                            $('#input-data-browser').text(responseData.meta.browser || 'Desconocido');
+                            $('#input-data-os').text(responseData.meta.os || 'Desconocido');
+                            $('#input-data-device').text(responseData.meta.device || responseData.meta.deviceType || 'Desconocido');
+                            $('#input-data-country').text(responseData.meta.country || 'Desconocido');
+                            $('#input-data-city').text(responseData.meta.city || 'Desconocido');
+                            $('#input-data-org').text(responseData.meta.org || 'Desconocido');
+                            $('#input-data-first-seen').text(formatDateTime(responseData.meta.firstSeen));
+                            $('#input-data-last-activity').text(formatDateTime(responseData.meta.lastActivity));
+                            $('#input-data-path').text(responseData.meta.currentPath || responseData.meta.lastPath || '/');
+                            $('#input-data-referrer').text(responseData.meta.referrer || 'Direct');
+                            $('#input-data-proxy').text(responseData.meta.proxy ? 'Yes' : 'No');
+                            
+                            // Update input data table with animation
+                            updateInputDataTable(responseData.inputs, true);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching real-time input data update:', error);
+                        }
+                    });
+                }
+            });
+            
+            // Listen for block/unblock results
+            socket.on('block-ip-result', function(data) {
+                console.log('Block IP result:', data);
+                showToast(data.message, data.success ? 'success' : 'danger');
+                refreshVisitorData();
+            });
+            
+            socket.on('unblock-ip-result', function(data) {
+                console.log('Unblock IP result:', data);
+                showToast(data.message, data.success ? 'success' : 'danger');
+                refreshVisitorData();
+            });
+            
+            // Listen for real-time IP blocked/unblocked events from other dashboard users
+            socket.on('ip-blocked', function(data) {
+                console.log('IP blocked event received:', data);
+                
+                // Show toast notification
+                showToast(`IP ${data.ip} has been blocked by ${data.by || 'admin'}`, 'warning');
+                
+                // Update visitor table to reflect blocked status
+                const visitorRow = $(`.visitor-row[data-ip="${data.ip}"]`);
+                if (visitorRow.length) {
+                    visitorRow.addClass('table-danger');
+                    visitorRow.attr('data-blocked', 'true');
+                    visitorRow.find('td:first-child').html(`<span class="status-indicator status-blocked"></span> Blocked`);
+                    
+                    // Add blocked badge to IP column if not already present
+                    const ipCell = visitorRow.find('td:nth-child(2)');
+                    if (!ipCell.html().includes('Blocked')) {
+                        ipCell.append(' <span class="badge bg-danger">Blocked</span>');
+                    }
+                }
+                
+                // If IP details modal is open for this IP, update the buttons
+                if ($('#ip-details-modal').data('ip') === data.ip) {
+                    $('#block-ip-btn').hide();
+                    $('#unblock-ip-btn').show();
+                }
+            });
+            
+            socket.on('ip-unblocked', function(data) {
+                console.log('IP unblocked event received:', data);
+                
+                // Show toast notification
+                showToast(`IP ${data.ip} has been unblocked by ${data.by || 'admin'}`, 'info');
+                
+                // Update visitor table to reflect unblocked status
+                const visitorRow = $(`.visitor-row[data-ip="${data.ip}"]`);
+                if (visitorRow.length) {
+                    visitorRow.removeClass('table-danger');
+                    visitorRow.attr('data-blocked', 'false');
+                    
+                    // Update status based on online status
+                    const isOnline = visitorRow.find('td:first-child').text().includes('Online');
+                    const statusClass = isOnline ? 'status-online' : 'status-offline';
+                    const statusText = isOnline ? 'Online' : 'Offline';
+                    visitorRow.find('td:first-child').html(`<span class="status-indicator ${statusClass}"></span> ${statusText}`);
+                    
+                    // Remove blocked badge from IP column
+                    const ipCell = visitorRow.find('td:nth-child(2)');
+                    ipCell.find('.badge.bg-danger').remove();
+                }
+                
+                // If IP details modal is open for this IP, update the buttons
+                if ($('#ip-details-modal').data('ip') === data.ip) {
+                    $('#unblock-ip-btn').hide();
+                    $('#block-ip-btn').show();
+                }
+            });
+            
+            // Listen for country settings updates
+            socket.on('country-settings-updated', function(data) {
+                console.log('Country settings updated:', data);
+                showToast('Country settings updated successfully', 'success');
+                refreshVisitorData();
+            });
+            
+            // Listen for proxy detection status updates
+            socket.on('proxy-detection-status', function(data) {
+                console.log('Proxy detection status update:', data);
+                window.proxyDetectionEnabled = data.enabled;
+                updateProxyToggleUI(data.enabled);
+            });
+            
+            // Listen for proxy detection toggle confirmation
+            socket.on('proxy-detection-toggled', function(data) {
+                console.log('Proxy detection toggled:', data);
+                if (data.success) {
+                    window.proxyDetectionEnabled = data.enabled;
+                    updateProxyToggleUI(data.enabled);
+                    showToast(`Proxy detection ${data.enabled ? 'enabled' : 'disabled'}`, 'success');
+                }
+            });
+        }
+        
+        // Set up event listeners for UI elements
+        function setupEventListeners() {
+            // Refresh visitors button
+            $('#refresh-visitors-btn').on('click', function() {
+                refreshVisitorData();
+            });
+            
+            // Export visitors button
+            $('#export-visitors-btn').on('click', function() {
+                exportVisitorData();
+            });
+            
+            // Toggle proxy detection
+            $('#toggle-proxy-btn').on('click', function() {
+                toggleProxyDetection();
+            });
+            
+            // Block IP button
+            $('#block-ip-btn').on('click', function() {
+                const ip = $('#ip-details-modal').data('ip');
+                if (ip) {
+                    // Confirm before blocking
+                    if (confirm(`Are you sure you want to block IP ${ip}? This will disconnect all active sessions from this IP and redirect them.`)) {
+                        // Emit block-ip event
+                        socket.emit('block-ip', { ip });
+                        
+                        // Update UI immediately for better UX
+                        $('#block-ip-btn').hide();
+                        $('#unblock-ip-btn').show();
+                        
+                        // Show toast notification
+                        showToast(`Blocking IP ${ip}...`, 'info');
+                    }
+                }
+            });
+            
+            // Unblock IP button
+            $('#unblock-ip-btn').on('click', function() {
+                const ip = $('#ip-details-modal').data('ip');
+                if (ip) {
+                    // Emit unblock-ip event
+                    socket.emit('unblock-ip', { ip });
+                    
+                    // Update UI immediately for better UX
+                    $('#unblock-ip-btn').hide();
+                    $('#block-ip-btn').show();
+                    
+                    // Show toast notification
+                    showToast(`Unblocking IP ${ip}...`, 'info');
+                }
+            });
+            
+            // Country mode switch
+            $('#country-mode-switch').on('change', function() {
+                const isAllowMode = $(this).prop('checked');
+                updateCountryModeUI(isAllowMode);
+            });
+            
+            // Add blocked country
+            $('#add-blocked-country-btn').on('click', function() {
+                addBlockedCountry();
+            });
+            
+            // Add allowed country
+            $('#add-allowed-country-btn').on('click', function() {
+                addAllowedCountry();
+            });
+            
+            // Save country settings
+            $('#save-country-settings-btn').on('click', function() {
+                saveCountrySettings();
+            });
+            
+            // Redirect preset selection
+            $('#redirect-preset').on('change', function() {
+                const value = $(this).val();
+                if (value === 'custom') {
+                    $('#custom-url-container').show();
+                } else {
+                    $('#custom-url-container').hide();
+                }
+            });
+        }
+        
+        // Initialize UI components
+        function initializeUI() {
+            // Initialize country filter mode UI
+            updateCountryModeUI(false); // Default to block mode
+            
+            // Initialize proxy detection status
+            updateProxyDetectionUI(true); // Default to enabled
+            
+            // Initialize country filter UI
+            initCountryFilterUI();
+            
+            // Initialize message sending functionality
+            setupMessageSendingEvents();
+            
+            // Send message to specific client
+            $('#send-message-btn').on('click', function() {
+                const ip = currentIP;
+                if (!ip) {
+                    showToast('Please select a visitor first', 'warning');
+                    return;
+                }
+                
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageContent = $('#message-content').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                if (!messageTitle || !messageContent) {
+                    showToast('Please enter both title and content for the message', 'warning');
+                    return;
+                }
+                
+                // Emit send-client-message event
+                socket.emit('send-client-message', {
+                    ip: ip,
+                    message: {
+                        type: messageType,
+                        title: messageTitle,
+                        content: messageContent,
+                        duration: messageDuration
+                    }
+                });
+                
+                showToast(`Message sent to ${ip}`, 'success');
+                
+                // Clear message fields
+                $('#message-title').val('');
+                $('#message-content').val('');
+            });
+            
+            // Send message to all clients
+            $('#send-message-to-all-btn').on('click', function() {
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageContent = $('#message-content').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                if (!messageTitle || !messageContent) {
+                    showToast('Please enter both title and content for the message', 'warning');
+                    return;
+                }
+                
+                // Confirm before sending to all clients
+                if (confirm('Are you sure you want to send this message to ALL connected clients?')) {
+                    // Emit send-all-clients-message event
+                    socket.emit('send-all-clients-message', {
+                        message: {
+                            type: messageType,
+                            title: messageTitle,
+                            content: messageContent,
+                            duration: messageDuration
+                        }
+                    });
+                    
+                    showToast('Message broadcast to all clients', 'success');
+                    
+                    // Clear message fields
+                    $('#message-title').val('');
+                    $('#message-content').val('');
+                }
+            });
+            
+            // Send message to all clients
+            $('#send-message-to-all-btn').on('click', function() {
+                const messageType = $('#message-type').val();
+                const messageTitle = $('#message-title').val().trim();
+                const messageContent = $('#message-content').val().trim();
+                const messageDuration = parseInt($('#message-duration').val()) || 10;
+                
+                if (!messageTitle || !messageContent) {
+                    showToast('Please enter both title and content for the message', 'warning');
+                    return;
+                }
+                
+                // Confirm before sending to all clients
+                if (confirm('Are you sure you want to send this message to ALL connected clients?')) {
+                    // Emit send-all-clients-message event
+                    socket.emit('send-all-clients-message', {
+                        message: {
+                            type: messageType,
+                            title: messageTitle,
+                            content: messageContent,
+                            duration: messageDuration
+                        }
+                    });
+                    
+                    showToast('Message sent to all clients', 'success');
+                    
+                    // Clear message fields
+                    $('#message-title').val('');
+                    $('#message-content').val('');
+                }
+            });
+            
+            // Listen for country filter settings response
+            socket.on('country-filter-settings', function(settings) {
+                console.log('Received country filter settings:', settings);
+                updateCountryFilterSettings(settings);
+            });
+            
+            // Listen for IP block confirmation
+            socket.on('ip-blocked', function(data) {
+                const { ip } = data;
+                console.log(`IP ${ip} has been blocked`);
+                
+                // Update visitor data to reflect blocked status
+                if (visitorData && visitorData.ipCache && visitorData.ipCache[ip]) {
+                    visitorData.ipCache[ip].blocked = true;
+                }
+                
+                // Update UI if the IP details modal is open for this IP
+                if ($('#ip-details-modal').data('ip') === ip) {
+                    $('#block-ip-btn').hide();
+                    $('#unblock-ip-btn').show();
+                }
+                
+                // Update visitor table row if present
+                const row = $(`.visitor-row[data-ip="${ip}"]`);
+                if (row.length) {
+                    // Add blocked class to row
+                    row.addClass('table-danger');
+                    // Update status indicator
+                    row.find('.status-indicator').removeClass('status-online status-offline').addClass('status-blocked');
+                }
+                
+                // Show success toast
+                showToast(`IP ${ip} has been blocked successfully`, 'success');
+            });
+            
+            // Listen for IP unblock confirmation
+            socket.on('ip-unblocked', function(data) {
+                const { ip } = data;
+                console.log(`IP ${ip} has been unblocked`);
+                
+                // Update visitor data to reflect unblocked status
+                if (visitorData && visitorData.ipCache && visitorData.ipCache[ip]) {
+                    visitorData.ipCache[ip].blocked = false;
+                }
+                
+                // Update UI if the IP details modal is open for this IP
+                if ($('#ip-details-modal').data('ip') === ip) {
+                    $('#unblock-ip-btn').hide();
+                    $('#block-ip-btn').show();
+                }
+                
+                // Update visitor table row if present
+                const row = $(`.visitor-row[data-ip="${ip}"]`);
+                if (row.length) {
+                    // Remove blocked class from row
+                    row.removeClass('table-danger');
+                    // Update status indicator based on online status
+                    const isOnline = visitorData.ipCache[ip]?.isOnline === true;
+                    row.find('.status-indicator')
+                        .removeClass('status-blocked')
+                        .addClass(isOnline ? 'status-online' : 'status-offline');
+                }
+                
+                // Show success toast
+                showToast(`IP ${ip} has been unblocked successfully`, 'success');
+            });
+        }
+        
+        // Refresh visitor data
+        function refreshVisitorData() {
+            console.log('Refreshing visitor data...');
+            
+            // Show loading indicator
+            $('#visitors-table-body').html('<tr><td colspan="7" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Loading visitors data...</td></tr>');
+            
+            // Fetch visitor data from server
+            $.ajax({
+                url: '/dashboard/data',
+                method: 'GET',
+                success: function(data) {
+                    console.log('Visitor data received:', data);
+                    
+                    // Store visitor data
+                    visitorData = data;
+                    
+                    // Update visitors table
+                    updateVisitorsTable(data);
+                    
+                    // Update online visitors count
+                    updateOnlineVisitorsCount(data);
+                    
+                    // Update country filter settings
+                    updateCountryFilterSettings(data.settings);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching visitor data:', error);
+                    $('#visitors-table-body').html('<tr><td colspan="7" class="text-center py-3 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error loading visitor data</td></tr>');
+                }
+            });
+        }
+        
+        // Update visitors table
+        function updateVisitorsTable(data) {
+            // Convert ipCache object to array of visitors
+            const ipCacheData = data.ipCache || {};
+            const visitors = Object.keys(ipCacheData).map(ip => {
+                return {
+                    ip: ip,
+                    ...ipCacheData[ip]
+                };
+            });
+            
+            const tableBody = $('#visitors-table-body');
+            
+            // Clear table
+            tableBody.empty();
+            
+            if (visitors.length === 0) {
+                tableBody.html('<tr><td colspan="7" class="text-center py-3">No visitors found</td></tr>');
+                return;
+            }
+            
+            // Sort visitors: online first, then by last activity
+            visitors.sort((a, b) => {
+                if (a.isOnline && !b.isOnline) return -1;
+                if (!a.isOnline && b.isOnline) return 1;
+                
+                const dateA = new Date(a.lastActivity || a.lastRequest || a.firstRequest);
+                const dateB = new Date(b.lastActivity || b.lastRequest || b.firstRequest);
+                return dateB - dateA;
+            });
+            
+            // Add visitors to table
+            visitors.forEach(visitor => {
+                const isBlocked = visitor.blocked === true;
+                const isOnline = visitor.isOnline === true;
+                const isProxy = visitor.proxy === true;
+                
+                // Determine status class
+                let statusClass = 'status-offline';
+                if (isOnline) statusClass = 'status-online';
+                if (isBlocked) statusClass = 'status-blocked';
+                
+                // Format last activity time
+                let lastActivity;
+                try {
+                    lastActivity = new Date(visitor.lastSeen || visitor.lastActivity || visitor.lastRequest || visitor.firstSeen || visitor.firstRequest);
+                    if (isNaN(lastActivity.getTime())) {
+                        lastActivity = new Date(); // Fallback to current time if date is invalid
+                    }
+                } catch (e) {
+                    console.error('Error parsing last activity date:', e);
+                    lastActivity = new Date(); // Fallback to current time
+                }
+                const timeAgo = getTimeAgo(lastActivity);
+                
+                // Create row with appropriate class if blocked
+                const row = $('<tr class="visitor-row"></tr>');
+                if (isBlocked) {
+                    row.addClass('table-danger'); // Red background for blocked IPs
+                }
+                row.attr('data-ip', visitor.ip);
+                row.attr('data-blocked', isBlocked ? 'true' : 'false');
+                
+                // Add cells
+                row.append(`<td><span class="status-indicator ${statusClass}"></span> ${isOnline ? 'Online' : (isBlocked ? 'Blocked' : 'Offline')}</td>`);
+                row.append(`<td>
+                    ${visitor.ip} 
+                    ${isProxy ? '<span class="badge bg-warning text-dark me-1">Proxy</span>' : ''}
+                    ${isBlocked ? '<span class="badge bg-danger">Blocked</span>' : ''}
+                </td>`);
+                row.append(`<td>${visitor.country ? (visitor.countryCode ? `<img src="https://flagcdn.com/16x12/${visitor.countryCode.toLowerCase()}.png" class="country-flag" alt="${visitor.countryCode}">` : '') + ` ${visitor.country}` : 'Desconocido'}</td>`);
+                row.append(`<td>${visitor.city || 'Desconocido'}</td>`);
+                row.append(`<td>${visitor.browser || 'Desconocido'} / ${visitor.os || 'Desconocido'}</td>`);
+                row.append(`<td><span class="badge bg-info">${visitor.requestCount || 0}</span></td>`);
+                row.append(`<td>${timeAgo}</td>`);
+                
+                // Action buttons
+                const actions = $('<td></td>');
+                
+                // View details button
+                const viewBtn = $(`<button class="btn btn-sm btn-primary btn-action me-1" title="View Details"><i class="bi bi-info-circle"></i></button>`);
+                viewBtn.on('click', function(e) {
+                    e.stopPropagation();
+                    showIPDetails(visitor.ip);
+                });
+                actions.append(viewBtn);
+                
+                // Block/unblock button
+                if (isBlocked) {
+                    const unblockBtn = $(`<button class="btn btn-sm btn-success btn-action me-1" title="Unblock IP"><i class="bi bi-unlock"></i></button>`);
+                    unblockBtn.on('click', function(e) {
+                        e.stopPropagation();
+                        unblockIP(visitor.ip);
+                    });
+                    actions.append(unblockBtn);
+                } else {
+                    const blockBtn = $(`<button class="btn btn-sm btn-danger btn-action me-1" title="Block IP"><i class="bi bi-shield-fill-x"></i></button>`);
+                    blockBtn.on('click', function(e) {
+                        e.stopPropagation();
+                        blockIP(visitor.ip);
+                    });
+                    actions.append(blockBtn);
+                }
+                
+                // Redirect button
+                const redirectBtn = $(`<button class="btn btn-sm btn-warning btn-action" title="Redirect Client"><i class="bi bi-box-arrow-right"></i></button>`);
+                redirectBtn.on('click', function(e) {
+                    e.stopPropagation();
+                    showRedirectModal(visitor.ip);
+                });
+                actions.append(redirectBtn);
+                
+                row.append(actions);
+                
+                // Add click handler for the entire row
+                row.on('click', function() {
+                    showIPDetails(visitor.ip);
+                });
+                
+                // Add row to table
+                tableBody.append(row);
+            });
+        }
+        
+        // Update online visitors count
+        function updateOnlineVisitorsCount(data) {
+            const ipCacheData = data.ipCache || {};
+            const visitors = Object.values(ipCacheData);
+            const onlineCount = visitors.filter(v => v.isOnline === true).length;
+            $('#online-visitors-count').text(onlineCount);
+        }
+        
+        // Show IP details modal
+        function showIPDetails(ip) {
+            console.log('Showing IP details for:', ip);
+            currentIP = ip;
+            
+            // Get visitor data from the ipCache object
+            const ipCacheData = visitorData.ipCache || {};
+            const visitor = ipCacheData[ip];
+            if (!visitor) {
+                console.error('Visitor data not found for IP:', ip);
+                return;
+            }
+            
+            // Update modal title and store IP in modal data attribute
+            $('#modal-ip-address').text(ip);
+            $('#ip-details-modal').data('ip', ip);
+            
+            // Show loading indicators in the modal
+            $('.visitor-info-item').html('<div class="spinner-border spinner-border-sm text-secondary" role="status"></div>');
+            
+            // Check if IP is blocked and update block/unblock buttons
+            const isBlocked = visitor.blocked === true;
+            if (isBlocked) {
+                $('#block-ip-btn').hide();
+                $('#unblock-ip-btn').show();
+            } else {
+                $('#block-ip-btn').show();
+                $('#unblock-ip-btn').hide();
+            }
+            
+            // First populate with data we already have
+            $('#modal-ip-country').text(visitor.country || 'Desconocido');
+            $('#modal-ip-city').text(visitor.city || 'Desconocido');
+            $('#modal-ip-isp').text(visitor.isp || 'Desconocido');
+            $('#modal-ip-org').text(visitor.org || 'Desconocido');
+            $('#modal-ip-proxy').text(visitor.proxy ? 'Yes' : 'No');
+            $('#modal-ip-browser').text(visitor.browser || 'Desconocido');
+            $('#modal-ip-os').text(visitor.os || 'Desconocido');
+            $('#modal-ip-request-count').text(visitor.requestCount || 0);
+            $('#modal-ip-device').text(visitor.device || 'Desconocido');
+            $('#modal-ip-first-seen').text(formatDateTime(visitor.firstSeen || visitor.firstRequest || 'Desconocido'));
+            $('#modal-ip-last-activity').text(formatDateTime(visitor.lastActivity || visitor.lastRequest));
+            $('#modal-ip-path').text(visitor.currentPath || visitor.lastPath || '/');
+            
+            // Fetch additional detailed data from the input-data endpoint
+            $.ajax({
+                url: `/dashboard/input-data/${ip}`,
+                method: 'GET',
+                success: function(data) {
+                    console.log('Detailed visitor data received:', data);
+                    
+                    // Update with more accurate metadata if available
+                    if (data && data.visitor) {
+                        // Update visitor information
+                        $('#modal-ip-country').text(data.visitor.country || visitor.country || 'Desconocido');
+                        $('#modal-ip-city').text(data.visitor.city || visitor.city || 'Desconocido');
+                        $('#modal-ip-isp').text(data.visitor.isp || visitor.isp || 'Desconocido');
+                        $('#modal-ip-org').text(data.visitor.org || visitor.org || 'Desconocido');
+                        $('#modal-ip-proxy').text(data.visitor.proxy ? 'Yes' : 'No');
+                        $('#modal-ip-browser').text(data.visitor.browser || visitor.browser || 'Desconocido');
+                        $('#modal-ip-os').text(data.visitor.os || visitor.os || 'Desconocido');
+                        $('#modal-ip-device').text(data.visitor.device || visitor.device || 'Desconocido');
+                        $('#modal-ip-first-seen').text(formatDateTime(data.visitor.firstSeen || visitor.firstSeen || visitor.firstRequest || data.meta?.firstSeen || 'Desconocido'));
+                        $('#modal-ip-last-activity').text(formatDateTime(data.visitor.lastRequest || visitor.lastActivity || visitor.lastRequest));
+                        $('#modal-ip-path').text(data.visitor.lastPath || visitor.currentPath || visitor.lastPath || '/');
+                        $('#modal-ip-referrer').text(data.visitor.referrer || visitor.referrer || 'Direct');
+                        
+                        // Update input data table
+                        updateInputDataTable(data.inputs || []);
+                    } else {
+                        // If no metadata available, clear input data table
+                        updateInputDataTable([]);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching detailed visitor data:', error);
+                    showToast('Error loading visitor data: ' + error, 'danger');
+                    updateInputDataTable([]);
+                }
+            });
+            
+            // Show the modal
+            $('#ip-details-modal').modal('show');
+            
+            // Update block/unblock button visibility
+            if (visitor.blocked) {
+                $('#block-ip-btn').hide();
+                $('#unblock-ip-btn').show();
+            } else {
+                $('#block-ip-btn').show();
+                $('#unblock-ip-btn').hide();
+            }
+            
+            // Set up block/unblock button handlers
+            $('#block-ip-btn').off('click').on('click', function() {
+                blockIP(ip);
+            });
+            
+            $('#unblock-ip-btn').off('click').on('click', function() {
+                unblockIP(ip);
+            });
+            
+            // Set up redirect button handler
+            $('#show-redirect-btn').off('click').on('click', function() {
+                $('#ip-details-modal').modal('hide');
+                showRedirectModal(ip);
+            });
+            
+            // Set up message button handler
+            $('#show-message-btn').off('click').on('click', function() {
+                $('#ip-details-modal').modal('hide');
+                showMessageModal(ip);
+            });
+            
+            // Set up input data button handler
+            $('#view-inputs-btn').off('click').on('click', function() {
+                $('#ip-details-modal').modal('hide');
+                showInputDataModal(ip);
+            });
+            
+            // Show modal - fix for the modal initialization error
+            try {
+                // Check if we're using the correct modal ID
+                const modalElement = document.getElementById('ip-details-modal');
+                if (!modalElement) {
+                    console.error('Modal element not found: ip-details-modal');
+                    return;
+                }
+                
+                // Initialize modal with proper configuration to prevent ARIA warnings
+                const modal = new bootstrap.Modal(modalElement, {
+                    backdrop: true,
+                    keyboard: true,
+                    focus: true
+                });
+                
+                // Add event listener to ensure focus is properly managed
+                modalElement.addEventListener('shown.bs.modal', function() {
+                    // Set focus on a non-interactive element first
+                    modalElement.querySelector('.modal-title').focus();
+                });
+                
+                // Fix ARIA issue by ensuring focus is properly managed when hiding modal
+                modalElement.addEventListener('hide.bs.modal', function() {
+                    // Move focus outside the modal before it's hidden
+                    document.body.focus();
+                });
+                
+                modal.show();
+            } catch (error) {
+                console.error('Error showing modal:', error);
+            }
+        }
+        
+        // Block IP
+        function blockIP(ip) {
+            console.log('Blocking IP:', ip);
+            
+            // Emit block-ip event
+            socket.emit('block-ip', { ip: ip });
+            
+            // Close modal if open
+            const modal = bootstrap.Modal.getInstance(document.getElementById('ip-actions-modal'));
+            if (modal) {
+                modal.hide();
+            }
+        }
+        
+        // Unblock IP
+        function unblockIP(ip) {
+            console.log('Unblocking IP:', ip);
+            
+            // Emit unblock-ip event
+            socket.emit('unblock-ip', { ip: ip });
+            
+            // Close modal if open
+            const modal = bootstrap.Modal.getInstance(document.getElementById('ip-actions-modal'));
+            if (modal) {
+                modal.hide();
+            }
+        }
+        
+        // Show redirect modal
+        function showRedirectModal(ip) {
+            console.log('Showing redirect modal for IP:', ip);
+            currentIP = ip;
+            
+            // Reset form
+            $('#redirect-preset').val('');
+            $('#custom-redirect-url').val('');
+            $('#custom-url-container').hide();
+            
+            // Set up confirm button handler
+            $('#confirm-redirect-btn').off('click').on('click', function() {
+                redirectIP(ip);
+            });
+            
+            // Show modal with proper focus management
+            const modalElement = document.getElementById('redirect-modal');
+            const modal = new bootstrap.Modal(modalElement, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+            
+            // Fix ARIA accessibility warning by properly managing focus
+            modalElement.addEventListener('shown.bs.modal', function() {
+                // Set focus on a non-interactive element first
+                modalElement.querySelector('.modal-title').focus();
+            });
+            
+            // Fix ARIA issue by ensuring focus is properly managed when hiding modal
+            modalElement.addEventListener('hide.bs.modal', function() {
+                // Move focus outside the modal before it's hidden
+                document.body.focus();
+            });
+            
+            modal.show();
+        }
+        
+        // Redirect IP
+        function redirectIP(ip) {
+            const preset = $('#redirect-preset').val();
+            let url = preset;
+            
+            if (preset === 'custom') {
+                url = $('#custom-redirect-url').val();
+            }
+            
+            if (!url) {
+                alert('Please select a destination or enter a custom URL');
+                return;
+            }
+            
+            console.log(`Redirecting IP ${ip} to ${url}`);
+            
+            // Emit redirect-user event
+            socket.emit('redirect-user', { ip: ip, url: url });
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('redirect-modal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Show success message
+            showToast(`Redirect command sent to IP ${ip}`, 'success');
+        }
+        
+        // Show message modal
+        function showMessageModal(ip) {
+            console.log('Showing message modal for IP:', ip);
+            currentIP = ip;
+            
+            // Reset form
+            $('#message-type').val('information');
+            $('#message-content').val('');
+            
+            // Update modal title
+            $('#message-modal-title').html(`<i class="bi bi-chat-left-text me-2"></i>Send Message: ${ip}`);
+            
+            // Show modal with proper focus management
+            const modalElement = document.getElementById('message-modal');
+            const modal = new bootstrap.Modal(modalElement, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+            
+            // Fix ARIA accessibility warning by properly managing focus
+            modalElement.addEventListener('shown.bs.modal', function() {
+                // Set focus on a non-interactive element first
+                modalElement.querySelector('.modal-title').focus();
+            });
+            
+            // Fix ARIA issue by ensuring focus is properly managed when hiding modal
+            modalElement.addEventListener('hide.bs.modal', function() {
+                // Move focus outside the modal before it's hidden
+                document.body.focus();
+            });
+            
+            modal.show();
+        }
+        
+        // Send message to IP
+        function sendMessage(ip) {
+            const type = $('#message-type').val() || 'information';
+            const message = $('#message-content').val();
+            const title = type.charAt(0).toUpperCase() + type.slice(1); // Capitalize the type as the title
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            console.log(`Sending ${type} message to IP ${ip}: ${message}`);
+            
+            // Emit message-prompt event
+            socket.emit('message-prompt', { 
+                ip: ip, 
+                message: message,
+                type: type,
+                title: title
+            });
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('message-modal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Show success message
+            showToast(`Mensaje enviado a la IP ${ip}`, 'success');
+        }
+        
+        // Show input data modal
+        function showInputDataModal(ip) {
+            console.log('Showing input data for IP:', ip);
+            currentIP = ip;
+            
+            // Update modal title
+            $('#input-data-ip').text(ip);
+            
+            // Show loading state
+            $('#input-data-table-body').html('<tr><td colspan="5" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div> Cargando datos introducidos...</td></tr>');
+            
+            // Fetch input data from server
+            $.ajax({
+                url: `/dashboard/input-data/${ip}`,
+                method: 'GET',
+                success: function(data) {
+                    console.log('Input data received:', data);
+                    
+                    // Hide loading spinner
+                    $('#input-data-loading').hide();
+                    
+                    // Show the table container
+                    $('#input-data-table-container').show();
+                    
+                    // Update visitor metadata
+                    $('#input-data-browser').text(data.meta.browser || 'Desconocido');
+                    $('#input-data-os').text(data.meta.os || 'Desconocido');
+                    $('#input-data-device').text(data.meta.device || data.meta.deviceType || 'Desconocido');
+                    $('#input-data-country').text(data.meta.country || 'Desconocido');
+                    $('#input-data-city').text(data.meta.city || 'Desconocido');
+                    $('#input-data-org').text(data.meta.org || 'Desconocido');
+                    $('#input-data-first-seen').text(formatDateTime(data.meta.firstSeen));
+                    $('#input-data-last-activity').text(formatDateTime(data.meta.lastActivity));
+                    $('#input-data-path').text(data.meta.currentPath || data.meta.lastPath || '/');
+                    $('#input-data-referrer').text(data.meta.referrer || 'Directo');
+                    $('#input-data-proxy').text(data.meta.proxy ? 'Sí' : 'No');
+                    
+                    // Update input data table
+                    updateInputDataTable(data.inputs, false);
+                    
+                    // Set up refresh button handler
+                    $('#refresh-inputs-btn').off('click').on('click', function() {
+                        showInputDataModal(ip);
+                    });
+                    
+                    // Set up delete cache button handler
+                    $('#delete-inputs-cache-btn').off('click').on('click', function() {
+                        // Delete cache only for the specific IP being viewed
+                        deleteInputDataCache(ip);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching input data:', error);
+                    $('#input-data-loading').hide();
+                    $('#input-data-table-container').show();
+                    $('#input-data-table-body').html('<tr><td colspan="5" class="text-center py-3 text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al cargar los datos introducidos</td></tr>');
+                }
+            });
+            
+            // Show modal with proper focus management
+            const modalElement = document.getElementById('input-data-modal');
+            const modal = new bootstrap.Modal(modalElement, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+            
+            // Fix ARIA accessibility warning by properly managing focus
+            modalElement.addEventListener('shown.bs.modal', function() {
+                // Set focus on a non-interactive element first
+                modalElement.querySelector('.modal-title').focus();
+            });
+            
+            // Fix ARIA issue by ensuring focus is properly managed when hiding modal
+            modalElement.addEventListener('hide.bs.modal', function() {
+                // Move focus outside the modal before it's hidden
+                document.body.focus();
+            });
+            
+            modal.show();
+        }
+        
+        /**
+         * Delete input data cache for a specific IP
+         * @param {string} ip - The IP address to delete cache for
+         */
+        function deleteInputDataCache(ip) {
+            if (!ip) return;
+            
+            // Show confirmation dialog
+            if (confirm(`Are you sure you want to delete all input data for IP ${ip}?`)) {
+                // Show loading indicator
+                $('#input-data-loading').show();
+                $('#input-data-table-container').hide();
+                
+                // Remove any existing listeners to avoid duplicates
+                socket.off('input-data-cache-deleted');
+                
+                // Listen for confirmation from server
+                socket.once('input-data-cache-deleted', function(data) {
+                    handleInputDataCacheDeletion(data, ip);
+                });
+                
+                // Send delete request to server with force flag to ensure complete deletion
+                socket.emit('delete-input-data-cache', { 
+                    ip: ip,
+                    forceDelete: true,  // Force complete deletion from all server caches
+                    deleteFromCapture: true  // Specifically delete from Input Data Captured
+                });
+                
+                console.log(`Requesting complete deletion of input data for IP ${ip} including Input Data Captured`);
+            }
+        }
+        
+        /**
+         * Handle the response after input data cache deletion
+         * @param {Object} data - Response data from server
+         * @param {string} ip - The IP address that was deleted
+         */
+        function handleInputDataCacheDeletion(data, ip) {
+            // Hide loading indicator
+            $('#input-data-loading').hide();
+            $('#input-data-table-container').show();
+            
+            if (data.success) {
+                // Show success message with appropriate text based on what was deleted
+                if (data.deletedFromCapture) {
+                    showToast(`Input data completely purged for IP ${ip} (including captured data)`, 'success');
+                } else {
+                    showToast(`Input data cache deleted for IP ${ip}`, 'success');
+                }
+                
+                // Clear table and reset UI
+                resetInputDataUI();
+                
+                // COMPLETELY DELETE the input data from client memory
+                purgeInputDataFromClientCache(ip);
+                
+                // Close the modal after a short delay
+                closeModalWithDelay('input-data-modal', 1500);
+            } else {
+                // Show error message
+                showToast(`Error al eliminar los datos introducidos: ${data.error || 'error desconocido'}`, 'error');
+            }
+        }
+        
+        /**
+         * Reset all input data UI elements to default state
+         */
+        function resetInputDataUI() {
+            // Clear table
+            $('#input-data-table-body').html('<tr><td colspan="5" class="text-center py-3">No input data available</td></tr>');
+            
+            // Clear all metadata fields
+            $('#input-data-browser').text('Desconocido');
+            $('#input-data-os').text('Desconocido');
+            $('#input-data-device').text('Desconocido');
+            $('#input-data-country').text('Desconocido');
+            $('#input-data-city').text('Desconocido');
+            $('#input-data-org').text('Desconocido');
+            $('#input-data-path').text('/');
+            $('#input-data-referrer').text('Direct');
+            $('#input-data-proxy').text('No');
+        }
+        
+        /**
+         * Completely purge input data from all client-side caches
+         * @param {string} ip - The IP address to purge data for
+         */
+        function purgeInputDataFromClientCache(ip) {
+            // Delete from main input data cache
+            if (inputData[ip]) {
+                delete inputData[ip]; // Delete the entire entry, not just clear the array
+                console.log(`Input data completely deleted from client cache for IP ${ip}`);
+            }
+            
+            // Also remove from any other client-side caches
+            if (window.visitorData && window.visitorData[ip]) {
+                if (window.visitorData[ip].inputs) delete window.visitorData[ip].inputs;
+                if (window.visitorData[ip].inputData) delete window.visitorData[ip].inputData;
+                console.log(`Input data removed from visitorData cache for IP ${ip}`);
+            }
+        }
+        
+        /**
+         * Close a modal with a delay
+         * @param {string} modalId - The ID of the modal to close
+         * @param {number} delayMs - Delay in milliseconds
+         */
+        function closeModalWithDelay(modalId, delayMs) {
+            setTimeout(() => {
+                try {
+                    const modalElement = document.getElementById(modalId);
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                } catch (error) {
+                    console.error(`Error closing modal ${modalId}:`, error);
+                }
+            }, delayMs);
+        }
+        
+        /**
+         * Delete ALL input data cache for all IPs
+         */
+        function deleteAllInputDataCache() {
+            // Show confirmation dialog
+            if (confirm('Are you sure you want to delete ALL input data cache for ALL IPs? This action cannot be undone.')) {
+                // Show loading indicator
+                $('#visitors-loading').show();
+                
+                // Remove any existing listeners to avoid duplicates
+                socket.off('all-input-data-cache-deleted');
+                
+                // Listen for confirmation
+                socket.once('all-input-data-cache-deleted', function(data) {
+                    // Hide loading indicator
+                    $('#visitors-loading').hide();
+                    
+                    if (data.success) {
+                        // Show success message
+                        showToast('All input data cache has been completely deleted', 'success');
+                        
+                        // Clear input data in memory
+                        inputData = {};
+                        
+                        // Refresh visitor data to show updated state
+                        refreshVisitorData();
+                    } else {
+                        // Show error message
+                        showToast(`Error al borrar la caché de datos introducidos: ${data.error || 'error desconocido'}`, 'error');
+                    }
+                });
+                
+                // Send delete all request to server
+                socket.emit('delete-all-input-data-cache');
+            }
+        }
+        
+        // Keep track of displayed inputs to prevent duplicates
+        let displayedInputs = [];
+        
+        // Update input data table
+        function updateInputDataTable(inputs, isRealTimeUpdate = false) {
+            const tableBody = $('#input-data-table-body');
+            const tableContainer = $('#input-data-table-container');
+            const noDataMessage = $('#no-input-data');
+            const loadingSpinner = $('#input-data-loading');
+            
+            // If this is not a real-time update, reset the displayed inputs tracking
+            if (!isRealTimeUpdate) {
+                displayedInputs = [];
+                // Clear table completely
+                tableBody.empty();
+            }
+            
+            // Hide loading spinner
+            loadingSpinner.hide();
+            
+            // Hide both containers initially if not a real-time update
+            if (!isRealTimeUpdate) {
+                tableContainer.hide();
+                noDataMessage.hide();
+            }
+            
+            if (!inputs || inputs.length === 0) {
+                // Show no data message if not a real-time update
+                if (!isRealTimeUpdate) {
+                    noDataMessage.show();
+                }
+                return;
+            }
+            
+            // Show table container
+            tableContainer.show();
+            
+            // Add inputs to table, avoiding duplicates
+            inputs.forEach((input, index) => {
+                // Create a unique identifier for this input
+                const inputId = `${input.timestamp}-${input.name}-${input.type}-${input.value}`;
+                
+                // Skip if this input has already been displayed
+                if (displayedInputs.includes(inputId)) {
+                    return;
+                }
+                
+                // Add to displayed inputs list
+                displayedInputs.push(inputId);
+                
+                // For real-time updates, prepend to the table instead of replacing
+                if (isRealTimeUpdate) {
+                    const row = $('<tr></tr>');
+                    
+                    // Format timestamp
+                    const timestamp = new Date(input.timestamp);
+                    const timeAgo = getTimeAgo(timestamp);
+                    
+                    // Add cells
+                    row.append(`<td>${formatTime(timestamp)} (${timeAgo})</td>`);
+                    row.append(`<td>${input.path || '/'}</td>`);
+                    row.append(`<td>${input.name || 'unnamed'}</td>`);
+                    row.append(`<td>${input.type || 'text'}</td>`);
+                    
+                    // Display all values, including passwords
+                    let displayValue = input.value || '';
+                    row.append(`<td>${displayValue}</td>`);
+                    
+                    // Add row to table (prepend for real-time updates)
+                    tableBody.prepend(row);
+                    
+                    // Highlight the newest entry with a flash animation
+                    row.addClass('highlight-new');
+                    setTimeout(() => {
+                        row.removeClass('highlight-new');
+                    }, 2000);
+                } else {
+                    // For regular updates, append rows
+                    const row = $('<tr></tr>');
+                    
+                    // Format timestamp
+                    const timestamp = new Date(input.timestamp);
+                    const timeAgo = getTimeAgo(timestamp);
+                    
+                    // Add cells
+                    row.append(`<td>${formatTime(timestamp)} (${timeAgo})</td>`);
+                    row.append(`<td>${input.path || '/'}</td>`);
+                    row.append(`<td>${input.name || 'unnamed'}</td>`);
+                    row.append(`<td>${input.type || 'text'}</td>`);
+                    
+                    // Display all values, including passwords
+                    let displayValue = input.value || '';
+                    row.append(`<td>${displayValue}</td>`);
+                    
+                    // Add row to table
+                    tableBody.append(row);
+                }
+            });
+        }
+        
+        // Helper function to format time
+        function formatTime(date) {
+            if (!date) return 'Desconocido';
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        
+        // Helper function to get time ago string
+        function getTimeAgo(date) {
+            if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+                return 'Desconocido';
+            }
+            
+            try {
+                const now = new Date();
+                const diffMs = now - date;
+                
+                // Handle future dates or incorrect system clock
+                if (diffMs < 0) {
+                    return 'Just now';
+                }
+                
+                const diffSec = Math.floor(diffMs / 1000);
+                const diffMin = Math.floor(diffSec / 60);
+                const diffHour = Math.floor(diffMin / 60);
+                const diffDay = Math.floor(diffHour / 24);
+                
+                if (diffSec < 60) {
+                    return 'Just now';
+                } else if (diffMin < 60) {
+                    return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
+                } else if (diffHour < 24) {
+                    return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
+                } else if (diffDay < 30) {
+                    return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
+                } else {
+                    // For very old dates, show actual date
+                    return date.toLocaleDateString();
+                }
+            } catch (e) {
+                console.error('Error calculating time ago:', e);
+                return 'Desconocido';
+            }
+        }
+        
+        // This function has been moved and consolidated with the other toggleProxyDetection function
+        
+        // This function has been moved and consolidated with the other updateProxyDetectionUI function
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = $(`
+                <div class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `);
+            
+            $('#toast-container').append(toast);
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            bsToast.show();
+            
+            // Remove toast from DOM after it's hidden
+            toast.on('hidden.bs.toast', function() {
+                toast.remove();
+            });
+        }
+        
+        // Update country filter settings
+        function updateCountryFilterSettings(settings) {
+            if (!settings) return;
+            
+            console.log('Updating country filter settings:', settings);
+            
+            // Update country filter mode
+            countryFilterMode = settings.countryFilterMode || 'block';
+            const isAllowMode = countryFilterMode === 'allow';
+            
+            // Update country filter mode UI
+            updateCountryModeUI(isAllowMode);
+            
+            // Update country lists - convert Sets to Arrays if needed
+            blockedCountries = settings.blockedCountries ? 
+                (settings.blockedCountries instanceof Set ? Array.from(settings.blockedCountries) : settings.blockedCountries) : [];
+            allowedCountries = settings.allowedCountries ? 
+                (settings.allowedCountries instanceof Set ? Array.from(settings.allowedCountries) : settings.allowedCountries) : [];
+            
+            // Update country lists UI
+            updateCountryListsUI();
+            
+            // Update redirect URL
+            $('#country-redirect-url').val(settings.countryRedirectUrl || '');
+        }
+        
+        // Update country mode UI
+        function updateCountryModeUI(isAllowMode) {
+            // Update switch
+            $('#country-mode-switch').prop('checked', isAllowMode);
+            
+            // Update mode text
+            $('#country-mode-text').text(isAllowMode ? 'Allow Only' : 'Block Mode');
+            
+            // Update country lists visibility
+            if (isAllowMode) {
+                $('#blocked-countries-container').hide();
+                $('#allowed-countries-container').show();
+            } else {
+                $('#blocked-countries-container').show();
+                $('#allowed-countries-container').hide();
+            }
+        }
+        
+        // Update country lists UI
+        function updateCountryListsUI() {
+            // Update blocked countries list
+            const blockedList = $('#blocked-countries-list');
+            blockedList.empty();
+            
+            // Convert Set to Array if it's a Set object
+            const blockedCountriesArray = Array.isArray(blockedCountries) ? blockedCountries : Array.from(blockedCountries || []);
+            
+            if (blockedCountriesArray.length === 0) {
+                blockedList.append('<li class="list-group-item text-muted">No countries blocked</li>');
+            } else {
+                blockedCountriesArray.forEach(country => {
+                    const item = $(`<li class="list-group-item d-flex justify-content-between align-items-center">${country} <button class="btn btn-sm btn-danger remove-country-btn"><i class="bi bi-x"></i></button></li>`);
+                    item.find('.remove-country-btn').on('click', function() {
+                        removeBlockedCountry(country);
+                    });
+                    blockedList.append(item);
+                });
+            }
+            
+            // Update allowed countries list
+            const allowedList = $('#allowed-countries-list');
+            allowedList.empty();
+            
+            // Convert Set to Array if it's a Set object
+            const allowedCountriesArray = Array.isArray(allowedCountries) ? allowedCountries : Array.from(allowedCountries || []);
+            
+            if (allowedCountriesArray.length === 0) {
+                allowedList.append('<li class="list-group-item text-muted">No countries allowed</li>');
+            } else {
+                allowedCountriesArray.forEach(country => {
+                    const item = $(`<li class="list-group-item d-flex justify-content-between align-items-center">${country} <button class="btn btn-sm btn-danger remove-country-btn"><i class="bi bi-x"></i></button></li>`);
+                    item.find('.remove-country-btn').on('click', function() {
+                        removeAllowedCountry(country);
+                    });
+                    allowedList.append(item);
+                });
+            }
+        }
+        
+        // Setup country filter events
+        function setupCountryFilterEvents() {
+            // Country mode switch event
+            $('#country-mode-switch').on('change', function() {
+                const isAllowMode = $(this).prop('checked');
+                updateCountryModeUI(isAllowMode);
+            });
+            
+            // Add blocked country button click event
+            $('#add-blocked-country-btn').on('click', function() {
+                addBlockedCountry();
+            });
+            
+            // Add allowed country button click event
+            $('#add-allowed-country-btn').on('click', function() {
+                addAllowedCountry();
+            });
+            
+            // Save country settings button click event
+            $('#save-country-settings-btn').on('click', function() {
+                saveCountrySettings();
+            });
+            
+            // Enter key press events for country inputs
+            $('#blocked-country-input').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    addBlockedCountry();
+                    e.preventDefault();
+                }
+            });
+            
+            $('#allowed-country-input').on('keypress', function(e) {
+                if (e.which === 13) { // Enter key
+                    addAllowedCountry();
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        // Add blocked country
+        function addBlockedCountry() {
+            const country = $('#blocked-country-input').val().trim().toUpperCase();
+            
+            if (!country) {
+                alert('Introduzca un código de país');
+                return;
+            }
+            
+            if (country.length !== 2) {
+                alert('Introduzca un código de país válido de 2 letras (p. ej., ES, FR, DE)');
+                return;
+            }
+            
+            if (blockedCountries.includes(country)) {
+                alert('Este país ya está bloqueado');
+                return;
+            }
+            
+            // Add country to blocked list
+            blockedCountries.push(country);
+            
+            // Update UI
+            updateCountryListsUI();
+            
+            // Clear input
+            $('#blocked-country-input').val('');
+        }
+        
+        // Remove blocked country
+        function removeBlockedCountry(country) {
+            blockedCountries = blockedCountries.filter(c => c !== country);
+            
+            // Update UI
+            updateCountryListsUI();
+        }
+        
+        // Add allowed country
+        function addAllowedCountry() {
+            const country = $('#allowed-country-input').val().trim().toUpperCase();
+            
+            if (!country) {
+                alert('Introduzca un código de país');
+                return;
+            }
+            
+            if (country.length !== 2) {
+                alert('Introduzca un código de país válido de 2 letras (p. ej., ES, FR, DE)');
+                return;
+            }
+            
+            if (allowedCountries.includes(country)) {
+                alert('Este país ya está permitido');
+                return;
+            }
+            
+            // Add country to allowed list
+            allowedCountries.push(country);
+            
+            // Update UI
+            updateCountryListsUI();
+            
+            // Clear input
+            $('#allowed-country-input').val('');
+        }
+        
+        // Remove allowed country
+        function removeAllowedCountry(country) {
+            allowedCountries = allowedCountries.filter(c => c !== country);
+            
+            // Update UI
+            updateCountryListsUI();
+        }
+        
+        
+        // Save country settings
+        function saveCountrySettings() {
+            const isAllowMode = $('#country-mode-switch').prop('checked');
+            const mode = isAllowMode ? 'allow' : 'block';
+            const redirectUrl = $('#country-redirect-url').val();
+            
+            console.log('Saving country settings:', {
+                mode,
+                blockedCountries,
+                allowedCountries,
+                redirectUrl,
+                proxyDetectionEnabled
+            });
+            
+            // Emit update-country-settings event
+            socket.emit('update-country-settings', {
+                mode,
+                blockedCountries,
+                allowedCountries,
+                redirectUrl,
+                proxyDetectionEnabled
+            });
+            
+            // Show success message
+            showToast('Ajustes del país guardados', 'success');
+        }
+        
+
+        
+        // Export visitor data
+        function exportVisitorData() {
+            console.log('Exporting visitor data');
+            
+            // Open export URL in new tab
+            window.open('/dashboard/export-visitors', '_blank');
+        }
+        
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            if ($('#toast-container').length === 0) {
+                $('body').append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>');
+            }
+            
+            // Create unique ID for this toast
+            const id = 'toast-' + Date.now();
+            
+            // Create toast element
+            const toast = $(`
+                <div id="${id}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `);
+            
+            // Add toast to container
+            $('#toast-container').append(toast);
+            
+            // Initialize and show toast
+            const bsToast = new bootstrap.Toast(document.getElementById(id), {
+                autohide: true,
+                delay: 3000
+            });
+            
+            bsToast.show();
+            
+            // Remove toast from DOM after it's hidden
+            $(`#${id}`).on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+        
+        // Format date and time
+        function formatDateTime(dateStr) {
+            if (!dateStr || dateStr === 'Desconocido') return 'Desconocido';
+            
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    console.warn('Formato de fecha no válido recibido:', dateStr);
+                    return 'Desconocido';
+                }
+                
+                return date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch (e) {
+                console.error('Error al formatear la fecha:', e, 'para la entrada:', dateStr);
+                return 'Desconocido';
+            }
+        }
+        
+        // Get time ago string
+        function getTimeAgo(date) {
+            if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+                return 'Desconocido';
+            }
+            
+            try {
+                const now = new Date();
+                const diffMs = now - date;
+                
+                // Handle future dates or incorrect system clock
+                    if (diffMs < 0) {
+                        return 'Ahora mismo';
+                }
+                
+                const diffSec = Math.floor(diffMs / 1000);
+                const diffMin = Math.floor(diffSec / 60);
+                const diffHour = Math.floor(diffMin / 60);
+                const diffDay = Math.floor(diffHour / 24);
+                
+                if (diffSec < 60) {
+                    return 'Ahora mismo';
+                } else if (diffMin < 60) {
+                    return `${diffMin} minuto${diffMin !== 1 ? 's' : ''} atrás`;
+                } else if (diffHour < 24) {
+                    return `${diffHour} hora${diffHour !== 1 ? 's' : ''} atrás`;
+                } else if (diffDay < 30) {
+                    return `${diffDay} día${diffDay !== 1 ? 's' : ''} atrás`;
+                } else {
+                    // For very old dates, show actual date
+                    return date.toLocaleDateString();
+                }
+            } catch (e) {
+                console.error('Error calculating time ago:', e);
+                return 'Desconocido';
+            }
+        }
+    </script>
+    <!-- Bootstrap 5 JavaScript Bundle with Popper -->
+    <!-- Input Data Modal -->
+    <div class="modal fade" id="input-data-modal" tabindex="-1" aria-labelledby="input-data-modal-title" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="input-data-modal-title">
+                        <i class="bi bi-keyboard me-2"></i>
+                        Datos introducidos: <span id="input-data-ip"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Información del visitante</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-2">
+                                                <strong>Navegador:</strong> <span id="input-data-browser">-</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Sistema operativo:</strong> <span id="input-data-os">-</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Dispositivo:</strong> <span id="input-data-device">-</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Organización:</strong> <span id="input-data-org">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-2">
+                                                <strong>Primera vez vista:</strong> <span id="input-data-first-seen">-</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Última actividad:</strong> <span id="input-data-last-activity">-</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Ruta actual:</strong> <span id="input-data-path">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Entradas capturadas</h6>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-primary" id="refresh-inputs-btn">
+                                            <i class="bi bi-arrow-clockwise me-1"></i>
+                                            Actualizar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hora</th>
+                                                    <th>Ruta</th>
+                                                    <th>Campo</th>
+                                                    <th>Tipo</th>
+                                                    <th>Valor</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="input-data-table-body">
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-3">Cargando datos introducidos...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modal backdrop fix script -->
+    <script>
+        // Fix for duplicate modal-backdrop and glitching hide/show
+        document.addEventListener('DOMContentLoaded', function() {
+            // More aggressive function to fix modal backdrops
+            function fixModalBackdrops(forceRemove = false) {
+                console.log('Fixing modal backdrops, force:', forceRemove);
+                
+                // Force hide all modal backdrops
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => {
+                    // First remove the 'show' class to trigger fade out
+                    backdrop.classList.remove('show');
+                    
+                    if (forceRemove) {
+                        // Force remove the backdrop
+                        if (backdrop.parentNode) {
+                            backdrop.parentNode.removeChild(backdrop);
+                        }
+                    } else {
+                        // Schedule removal after fade animation
+                        setTimeout(() => {
+                            if (backdrop.parentNode) {
+                                backdrop.parentNode.removeChild(backdrop);
+                            }
+                        }, 150); // Bootstrap fade is 150ms
+                    }
+                });
+                
+                // Reset body styles
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+                
+                // Add a style to ensure backdrops are hidden
+                const styleId = 'backdrop-fix-style';
+                if (!document.getElementById(styleId)) {
+                    const style = document.createElement('style');
+                    style.id = styleId;
+                    style.textContent = `
+                        .modal-backdrop.fade:not(.show) { opacity: 0 !important; }
+                        body:not(.modal-open) { overflow: auto !important; padding-right: 0 !important; }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+            
+            // Fix on page load
+            fixModalBackdrops(true);
+            
+            // Fix modal show/hide logic
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                // Store original methods
+                const originalShow = bootstrap.Modal.prototype.show;
+                const originalHide = bootstrap.Modal.prototype.hide;
+                
+                // Override show method
+                bootstrap.Modal.prototype.show = function() {
+                    // Fix backdrops before showing a new modal
+                    fixModalBackdrops(true);
+                    
+                    // Call original method
+                    originalShow.apply(this, arguments);
+                };
+                
+                // Override hide method
+                bootstrap.Modal.prototype.hide = function() {
+                    // Call original method
+                    originalHide.apply(this, arguments);
+                    
+                    // Fix backdrops after hiding
+                    setTimeout(() => fixModalBackdrops(true), 150);
+                };
+            }
+            
+            // Enhanced close button handler
+            function handleCloseButtonClick(event) {
+                console.log('Close button clicked');
+                
+                // Prevent default if it's a link
+                if (this.tagName === 'A') {
+                    event.preventDefault();
+                }
+                
+                // Get the modal element
+                const modalElement = this.closest('.modal');
+                
+                // Force hide the modal immediately
+                if (modalElement) {
+                    // Remove the show class first
+                    modalElement.classList.remove('show');
+                    
+                    // Then set display none after a brief delay
+                    setTimeout(() => {
+                        modalElement.style.display = 'none';
+                        modalElement.setAttribute('aria-hidden', 'true');
+                        modalElement.removeAttribute('aria-modal');
+                        modalElement.removeAttribute('role');
+                    }, 10);
+                }
+                
+                // Immediately start removing backdrops
+                fixModalBackdrops(false);
+                
+                // Force remove after animation
+                setTimeout(() => fixModalBackdrops(true), 150);
+                
+                // Final cleanup to ensure everything is gone
+                setTimeout(() => fixModalBackdrops(true), 300);
+            }
+            
+            // Add event listeners to all modal close buttons
+            function addCloseButtonListeners() {
+                // Standard Bootstrap close buttons
+                document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(button => {
+                    // Remove existing listeners to avoid duplicates
+                    button.removeEventListener('click', handleCloseButtonClick);
+                    // Add new listener
+                    button.addEventListener('click', handleCloseButtonClick);
+                });
+                
+                // Bootstrap 5 btn-close buttons
+                document.querySelectorAll('.btn-close').forEach(button => {
+                    // Remove existing listeners to avoid duplicates
+                    button.removeEventListener('click', handleCloseButtonClick);
+                    // Add new listener
+                    button.addEventListener('click', handleCloseButtonClick);
+                });
+                
+                // Any button inside a modal footer (likely a close/cancel button)
+                document.querySelectorAll('.modal-footer button').forEach(button => {
+                    // Add our cleanup to modal footer buttons
+                    button.addEventListener('click', function() {
+                        setTimeout(() => fixModalBackdrops(true), 150);
+                    });
+                });
+            }
+            
+            // Initial setup
+            addCloseButtonListeners();
+            
+            // Handle dynamically added buttons with MutationObserver
+            const observer = new MutationObserver(function(mutations) {
+                let shouldAddListeners = false;
+                
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length) {
+                        for (let i = 0; i < mutation.addedNodes.length; i++) {
+                            const node = mutation.addedNodes[i];
+                            if (node.nodeType === 1) { // Element node
+                                if (node.classList && (node.classList.contains('btn-close') || 
+                                    node.hasAttribute('data-bs-dismiss'))) {
+                                    shouldAddListeners = true;
+                                    break;
+                                } else if (node.querySelector && 
+                                          (node.querySelector('.btn-close') || 
+                                           node.querySelector('[data-bs-dismiss="modal"]'))) {
+                                    shouldAddListeners = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                if (shouldAddListeners) {
+                    addCloseButtonListeners();
+                }
+            });
+            
+            // Start observing
+            observer.observe(document.body, { childList: true, subtree: true });
+            
+            // Global escape key handler
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    fixModalBackdrops(true);
+                }
+            });
+            
+            // Add a click handler to any backdrop that appears
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal-backdrop')) {
+                    console.log('Backdrop clicked, removing');
+                    fixModalBackdrops(true);
+                }
+            });
+        });
+    </script>
+    
+    <!-- Proxy Detection Toggle Script -->
+    <script>
+        // Use window object to avoid variable redeclaration issues
+        window.proxyDetectionEnabled = true;
+        
+        $(document).ready(function() {
+            // Initialize proxy toggle button
+            initProxyToggle();
+            
+            // Request initial proxy detection status from server
+            socket.emit('get-proxy-detection-status');
+        });
+        
+        /**
+         * Initialize proxy toggle button and event listeners
+         */
+        function initProxyToggle() {
+            // Set up click event for proxy toggle button
+            $('#proxy-toggle-btn').on('click', function() {
+                // Get current state (opposite of current aria-pressed value)
+                const newState = $(this).attr('aria-pressed') !== 'true';
+                
+                // Toggle proxy detection
+                toggleProxyDetection(newState);
+            });
+            
+            // Listen for proxy detection status updates from server
+            socket.on('proxy-detection-status', function(data) {
+                console.log('Received proxy detection status:', data);
+                updateProxyToggleUI(data.enabled);
+            });
+            
+            // Listen for proxy detection toggle confirmation from server
+            socket.on('proxy-detection-toggled', function(data) {
+                console.log('Proxy detection toggled:', data);
+                updateProxyToggleUI(data.enabled);
+                showToast(`Proxy detection ${data.enabled ? 'enabled' : 'disabled'} successfully`, 'success');
+            });
+            
+            // Listen for country filter settings which may include proxy detection state
+            socket.on('country-filter-settings', function(settings) {
+                if (settings.hasOwnProperty('proxyDetectionEnabled')) {
+                    updateProxyToggleUI(settings.proxyDetectionEnabled);
+                }
+            });
+        }
+        
+        /**
+         * Toggle proxy detection state
+         * @param {boolean} enabled - Whether to enable or disable proxy detection
+         */
+        function toggleProxyDetection(enabled) {
+            console.log(`Toggling proxy detection to: ${enabled}`);
+            
+            // Disable button temporarily to prevent rapid toggling
+            const $toggleBtn = $('#proxy-toggle-btn');
+            $toggleBtn.prop('disabled', true);
+            
+            // Update UI immediately for better user experience
+            updateProxyToggleUI(enabled);
+            
+            // Send update to server
+            socket.emit('update-proxy-detection', { enabled });
+            
+            // Re-enable button after a short delay
+            setTimeout(() => {
+                $toggleBtn.prop('disabled', false);
+            }, 800);
+        }
+        
+        /**
+         * Update proxy toggle UI based on state
+         * @param {boolean} enabled - Whether proxy detection is enabled
+         */
+        function updateProxyToggleUI(enabled) {
+            // Update global state
+            window.proxyDetectionEnabled = enabled;
+            
+            const $toggleBtn = $('#proxy-toggle-btn');
+            const $toggleLabel = $('#proxy-toggle-label');
+            
+            // Add animation class
+            $toggleBtn.addClass('proxy-toggle-animate');
+            
+            // Update aria-pressed attribute
+            $toggleBtn.attr('aria-pressed', enabled);
+            
+            // Update label text
+            $toggleLabel.text(enabled ? 'ON' : 'OFF');
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                $toggleBtn.removeClass('proxy-toggle-animate');
+            }, 400);
+        }
+    </script>
+</body>
+</html>

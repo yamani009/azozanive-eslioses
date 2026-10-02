@@ -1,0 +1,244 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+    
+
+.topano{
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.topano img{
+    width: 100%;
+}
+
+.topano img:nth-child(2){
+    display: none;
+}
+.maina{
+    margin: 0 auto;
+    max-width: 350px;
+    border: 1.5px solid rgb(206, 206, 206);
+    border-radius: 10px;
+    padding: 0 5px;
+}
+.maina img{
+    width: 100%;
+    padding-top: 15px;
+}
+.maina img:nth-child(2){
+    display: none;
+}
+
+.line{
+    width: 100%;
+    height: 1.5px;
+    margin-top: 20px;
+    background-color: rgb(229, 229, 229);
+}
+
+.botamano{
+    margin: 0 auto;
+    max-width: 40%;
+}
+.botamano img{
+    width: 100%;
+}
+.botamano img:nth-child(2){
+    display: none;
+}
+.indrrforma-pc{
+    display: block;
+}
+.indrrforma-pc{
+    margin: 0 auto;
+
+    max-width: 400px;
+}
+.inmaina{
+    margin: 15px ;
+}
+.pp1{
+    font-size: 28px;
+    font-weight: 600;
+}
+.pp2{
+    font-size: 16px;
+    font-weight: 500;
+
+    margin-top: 15px;
+}
+.maina input{
+    width: 100%;
+    border: 1px solid rgb(95, 95, 95);
+    border-radius: 6px;
+    padding: 7px;
+    margin-top: 10px;
+
+}
+
+.maina button{
+    width: 100%;
+    background-color: #ffd814;
+  border-color: #ffd814;
+  border: none;
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 60px;
+  margin-top: 20px;
+}
+
+.mb{
+    display: none;
+}
+
+.pas{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.pp3{
+    font-size: 16px;
+    font-weight: 600;
+}
+.pp4{
+    font-size: 16px;
+    font-weight: 500;
+    color: #1578aa;
+}
+/*  */
+
+
+.maina-ico{
+    display: grid;
+    justify-content: center;
+    width: 100%;
+}
+.maina-top svg{
+    justify-self: center;
+}
+.pp11{
+    font-size: 19px;
+    font-weight: 600;
+}
+.mm{
+    display: flex;
+    justify-content: space-between;
+
+}
+.mm div{
+    width: 49%;
+}
+.maina2{
+    max-width: 600px;
+}
+.maina2 input{
+    height: 45px;
+    border-color: rgb(189, 189, 189);
+}
+.maina2 p{
+    margin-top: 15px;
+    margin-bottom: 7px;
+}
+.privacy{
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    justify-content: center;
+}
+.privacy svg{
+    margin-right: 10px;
+}
+.privacy p{
+    margin: 0;
+    color: #565656;
+}
+
+
+
+
+
+
+
+
+
+
+/*  */
+@media (max-width: 668px) {
+    .mb{
+        display: block;
+    }
+    .pc{
+        display: none;
+    }
+    .topano{
+        width: 100%;
+    }
+    .topano img:nth-child(1){
+        display: none;
+    }
+    .topano img:nth-child(2){
+        display: block;
+    }
+    .maina{
+        width: 100%;
+    }
+    .maina img{
+        width: 100%;
+    }
+    .maina .mb{
+        display: block;
+    }
+    .maina .pc{
+        display: none;
+    }
+    .botamano{
+        max-width: 100%;
+    }
+    .botamano img{
+        width: 100%;
+    }
+    .botamano img:nth-child(1){
+        display: none;
+    }
+    .botamano img:nth-child(2){
+        display: block;
+    }
+    .indrrforma-pc{
+        display: none;
+    }
+    .maina{
+        margin: 0 auto;
+        max-width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 0px;
+    }
+    .pp1{
+        font-size: 22px;
+        display: flex;
+    }
+    .pas{
+        display: none;
+    }
+    .mb-inp{
+        height: 45px;
+    }
+    .mb-pass{
+        background-color: #f5f5f5e6;
+    }
+    
+}
+
+.pc1 {
+    padding: 10px 120px;
+}

