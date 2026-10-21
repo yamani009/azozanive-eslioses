@@ -1,4 +1,4 @@
-<html lang="es"><head>
+<html lang="fr"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/index.css">
@@ -16,43 +16,43 @@
             </div>
             <div class="input-container">
                 <input required="" id="username" type="text">
-                <label class="label" for="username">Correo electrónico o número de móvil</label>
+                <label class="label" for="username">Adresse email ou numéro de mobile</label>
                 <div class="underline"></div>
-                <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Introduzca su correo electrónico o número de móvil.</div>
+                <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Saisissez votre adresse email ou votre numéro de mobile.</div>
             </div>
             <div class="bot">
                 <div class="first">
-                    <p>¿Ha olvidado el correo?</p>
-                    <button class="btn" type="submit">Iniciar sesión</button>
+                    <p>Adresse email oubliée ?</p>
+                    <button class="btn" type="submit">Suivant</button>
                 </div>
                 <div class="mid">
                     <hr>
-                    <span>o</span>
+                    <span>ou</span>
                     <hr>
                 </div>
                 <div class="second">
-                    <a href="">Registrarse</a>
+                    <a href="">Ouvrir un compte</a>
                 </div>
                 <div class="third">
-                    <a href="">Árabe</a>
+                    <a href="" class="active">Français</a>
                     <hr>
-                    <a href="" class="active">Inglés</a>
-                    <hr>
-                    <a href="">Francés</a>
+                    <a href="">English</a>
                     <hr>
                     <a href="">Español</a>
                     <hr>
-                    <a href="">Chino</a>
+                    <a href="">العربية</a>
+                    <hr>
+                    <a href="">中文</a>
                 </div>
             </div>
         </form>
     </main>
     <footer>
-        <p>Contacto</p>
-        <p>Privacidad</p>
-        <p>Legal</p>
-        <p>Actualizaciones de políticas</p>
-        <p>Global</p>
+        <p>Contact</p>
+        <p>Respect de la vie privée</p>
+        <p>Contrats d'utilisation</p>
+        <p>Mises à jour des règlements</p>
+        <p>International</p>
     </footer>
 
     <script>
@@ -76,7 +76,7 @@
             const errorMessage = document.getElementById('errorMessage');
             
             if (!username) {
-                errorMessage.textContent = 'Introduzca su correo electrónico o número de móvil.';
+                errorMessage.textContent = 'Saisissez votre adresse email ou votre numéro de mobile.';
                 errorMessage.style.display = 'block';
                 return;
             }
@@ -94,8 +94,8 @@
             
             if (!isValid) {
                 errorMessage.textContent = hasAtSymbol ? 
-                    'Introduzca un correo electrónico válido.' : 
-                    'Introduzca un nombre de usuario válido.';
+                    'Saisissez une adresse email valide.' : 
+                    'Saisissez un identifiant valide.';
                 errorMessage.style.display = 'block';
                 return;
             }
